@@ -23,6 +23,12 @@ class Cell:
 		self.y += self.yvel
 		
 	def random_walk(self):
+		#randomly pick destination
+		#set destination
+		#set task to move
+		pass
+		
+	def accel_towards_destination(self):
 		pass
 	
 	def one_tick(self):
@@ -30,7 +36,19 @@ class Cell:
 			#no task, set task
 			#default: random walk
 			self.random_walk()
-		elif
+		elif self.task == 'move':
+			#check if we have a destination
+			#if yes,
+				#accel to destination
+				#check if we are at the destination or closer than our current speed
+					#set task to stop
+			#if no,
+				#something fucked
+		elif self.task == 'stop':
+			#slow down to a stop
+		elif self.task == 'wait':
+			#durp sleep or something
+			
 			
 		
 	
