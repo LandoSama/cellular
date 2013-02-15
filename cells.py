@@ -1,23 +1,25 @@
 import math, unittest
 from random import randint
 
+def distance(a,b):
+	pass
+
 class Cell:
 	def __init__(self,x,y):
-		self.max_acceleration = 1
-		self.max_speed = 10
-		self.speed = 0
-		self.x = x
-		self.y = y
-		self.xvel = 0
-		self.yvel = 0
+		self.max_acceleration = 1.0
+		self.max_speed = 10.0
+		self.x = float(x)
+		self.y = float(y)
+		self.xvel = 0.0
+		self.yvel = 0.0
 		self.task = None
 		self.destination = None
 
 	def get_pos(self):
 		return (self.x, self.y)
 
-	def update_speed(self):
-		self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
+	#def update_speed(self):
+	#	self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
 
 	def update_coords(self):
 		self.x += self.xvel
@@ -39,9 +41,24 @@ class Cell:
 		# get y dist to dest
 		if self.x > self.destination:
 			self.xvel -= self.max_acceleration(x/(x+y))
+			if abs(self.xvel) >= self.max_speed:
+				self.xvel = self.max_speed * (-1)
 		else:
 			self.xvel += self.max_acceleration(x/(x+y))
-
+			if abs(self.xvel) >= self.max_speed:
+				self.xvel = self.max_speed
+			
+		if self.y > self.destination:
+			self.y -= self.max_acceleration(y/(x+y))
+			if abs(self.yvel) >= self.max_speed:
+				self.yvel = self.max_speed * (-1)
+		else:
+			self.yvel += self.max_acceleration(y/(x+y))
+			if abs(self.yvel) >= self.max_speed:
+				self.yvel = self.max_speed
+				
+		self.update_coords()
+				
 	def stop(self):
 		pass
 
@@ -54,9 +71,10 @@ class Cell:
 			pass
 			#check if we have a destination
 			#if yes,
-				#accel to destination
 				#check if we are at the destination or closer than our current speed
 					#set task to stop
+				#if we are further away than that
+					#self.accel_towards_destination()
 			#if no,
 				#something fucked
 		elif self.task == 'stop':
