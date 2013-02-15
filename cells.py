@@ -23,6 +23,12 @@ class Cell:
 		self.y += self.yvel
 		
 	def random_walk(self):
+		#randomly pick destination
+		#set destination
+		#set task to move
+		pass
+		
+	def accel_towards_destination(self):
 		pass
 	
 	def one_tick(self):
