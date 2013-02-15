@@ -3,7 +3,9 @@ jack's notes from e-mail
 So heres some notes on what I would like to see in a dumbed down 0.1 engine.
 
 N cells spawn at random x,y coords
+
 Each cell is a circle with radius 1
+
 food is randomly dropped in at a given rate to random locations
 
 cells move towards food if close enough else they just travel, turning a certain amount after a random distance
@@ -11,18 +13,35 @@ cells move towards food if close enough else they just travel, turning a certain
 cells increase their size and make new organelles by buying them with energy and materials
 
 food is digested in a raction that produces energy and materials
+
 when the radius of a cell hits 2.0, it stops growing and divides into two cells of radius 1 or something
+
 starting organelles could just be a nucleus, a cell membrane, a digester to convert food into materials and energy, and a ribosomeish contructor to make new organelles
+
 cells should move and accellerate based on their radius and friction in the enviornment
+
 just touching food could make them eat it
+
 After this there are a few differnt directions I could see us distributing among various groups:
 
 Increasing the complexity of food and metabolism
+
 Graphical output
+
 Cell ai
+
 Genetics and evolution
+
 Complexifying interal cell systems
+
 adding new types of cells like plants and predators
+
 cell aging and death
+
 enviornmental factors
+
 logging and data visualzation
+
+0.1
+
+Cells - Jack
