@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-import math
-
-class Cell: 
-=======
 import math, unittest
 from random import randint
 
+
 class Cell:
->>>>>>> 0.1.cells
 	def __init__(self,x,y):
 		self.max_acceleration = 1
 		self.max_speed = 10
