@@ -6,8 +6,7 @@ class Environment:
 	cellList = []
 	width = height = 100
 	
-	def __init__(self):
-		count = raw_input("Number of cells: ")
+	def __init__(self, count):
 		#width = raw_input("Width of environment: ")
 		#height = raw_input("Height of environment: ")
 		self.add_cells(count)
