@@ -1,7 +1,7 @@
 import unittest
 from environment import Environment
 
-class EnvironmentTestCase:
+class EnvironmentTestCase(unittest.TestCase):
 	def runTest(self):
 		environment = Environment()
 		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'

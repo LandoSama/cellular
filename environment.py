@@ -1,5 +1,7 @@
 from cells import Cell
 import random
+import unittest
+from environmentTest import EnvironmentTestCase
 
 class Environment:
 	cellList = []
@@ -22,3 +24,6 @@ class Environment:
 	def debug_output(self):
 		for cell in self.cellList:
 			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+
+if __name__ == "__main__":
+	unittest.main()
