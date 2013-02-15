@@ -25,7 +25,7 @@ class Environment:
 
 class EnvironmentTestCase(unittest.TestCase):
 	def runTest(self):
-		environment = Environment()
+		environment = Environment(10)
 		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'
 		environment.debug_output()
 
