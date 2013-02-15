@@ -1,21 +1,24 @@
+from cells import Cell
+import random
+
 class Environment:
-	cells = []
+	cellList = []
 	width = height = 100
 	
 	def __init__(self):
 		count = raw_input("Number of cells: ")
 		#width = raw_input("Width of environment: ")
 		#height = raw_input("Height of environment: ")
-		add_cells(count)
+		self.add_cells(count)
 	
 	def add_cells(self, count):
-		for i = 1 to count:
-			#cells.push(Cell(random.randint(0, width), random.randint(0, height))
+		for i in range(1, int(count)):
+			self.cellList.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
-	def tick(self)
-		#for cell in cells:
-			#cell.tick()
+	def tick(self):
+		for cell in self.cellList:
+			cell.tick()
 	
 	def debug_output(self):
-		#for cell in cells:
-			#print "(", cell.x, ", ", cell.y, ")"
+		for cell in self.cellList:
+			print "(" + str(cell.x) + ", " + str(cell.y) + ")"

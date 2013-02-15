@@ -1,24 +1,24 @@
 import math
 
 class Cell: 
-	def __init__(self,x,y)
-    self.max_acceleration = 1
-    self.max_speed = 10
-    self.speed = 0
-    self.x = x
-    self.y = y
-    self.xvel = 0
-    self.yvel = 0
-    self.task = None
-    self.destination = None
+	def __init__(self,x,y):
+		self.max_acceleration = 1
+		self.max_speed = 10
+		self.speed = 0
+		self.x = x
+		self.y = y
+		self.xvel = 0
+		self.yvel = 0
+		self.task = None
+		self.destination = None
 
-    def get_pos(self):
-        return (x_pos, y_pos)
-    
-    def update_speed(self):
-        self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
-        
-    def update_coords(self):
+	def get_pos(self):
+		return (x_pos, y_pos)
+	
+	def update_speed(self):
+		self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
+		
+	def update_coords(self):
 		self.x += self.xvel
 		self.y += self.yvel
 		
@@ -30,11 +30,4 @@ class Cell:
 			#no task, set task
 			#default: random walk
 			self.random_walk()
-		elif
-			
-		
-	
-		
-	
-        
-     
+		#elif
