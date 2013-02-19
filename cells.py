@@ -19,6 +19,15 @@ class Cell:
 	def get_pos(self):
 		return (self.x, self.y)
 
+	def get_vel(self):
+		return (self.xvel, self.yvel)
+
+	def get_task(self):
+		return self.task
+
+	def get_destination(self):
+		return self.destination
+
 	#def update_speed(self):
 	#	self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
 
@@ -30,10 +39,7 @@ class Cell:
 		self.task = new_task
 
 	def random_walk(self):
-		#math.random(
-		#randomly pick destination
-		#set destination
-		#set task to move
+		self.destination = random.random(),random.random()
 		self.set_task('move')
 		pass
 
