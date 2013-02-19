@@ -1,5 +1,5 @@
 import math, unittest
-from random import randint
+import random
 
 def distance(a,b):
 	pass
@@ -13,6 +13,7 @@ class Cell:
 		self.xvel = 0.0
 		self.yvel = 0.0
 		self.task = None
+		#lets say that a destination is a tuple of the form (x,y) where x and y are real numbers
 		self.destination = None
 
 	def get_pos(self):
@@ -37,23 +38,28 @@ class Cell:
 		pass
 
 	def accel_towards_destination(self):
-		# get x dist to dest
-		# get y dist to dest
+		# get total distance to dest
+		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1]
+		# get x distance to dest
+		xdist = abs(self.x - self.destination[0]
+		# get y distance to dest
+		ydist = abs(self.y - self.destination[1]
+
 		if self.x > self.destination:
-			self.xvel -= self.max_acceleration(x/(x+y))
+			self.xvel -= self.max_acceleration(xdist/total_distance)
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed * (-1)
 		else:
-			self.xvel += self.max_acceleration(x/(x+y))
+			self.xvel += self.max_acceleration(xdist/total_distance)
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed
 			
 		if self.y > self.destination:
-			self.y -= self.max_acceleration(y/(x+y))
+			self.y -= self.max_acceleration(ydist/total_distance)
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed * (-1)
 		else:
-			self.yvel += self.max_acceleration(y/(x+y))
+			self.yvel += self.max_acceleration(ydist/total_distance)
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
 				
@@ -87,7 +93,7 @@ class Cell:
 
 class TestFunctions(unittest.TestCase):
 	def test_position(self):
-			rand_pos = randint(1, 100), randint(1,100)
+			rand_pos = random.random(), random.random()
 			z = Cell(rand_pos[0], rand_pos[1])
 			assert z.x ==rand_pos[0]
 			assert z.y==rand_pos[1]
