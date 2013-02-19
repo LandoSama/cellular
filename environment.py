@@ -2,6 +2,7 @@ from cells import Cell
 from food import Food
 import random
 import unittest
+import math
 
 class Environment:
 	cell_list = []
@@ -15,15 +16,16 @@ class Environment:
 		self.add_cells(cell_count)
 	
 	def add_food(self, food_count):
-		for i in range(1, int(food_count)):
+		for i in range(food_count):
 			self.food_list.append(Food(random.randint(0, self.width), random.randint(0, self.height)))
 
 	def add_cells(self, cell_count):
-		for i in range(1, int(cell_count)):
+		for i in range(cell_count):
 			self.cell_list.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def tick(self):
 		for cell in self.cell_list:
+			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
 			cell.one_tick()
 
 class EnvironmentTestCase(unittest.TestCase):
@@ -38,7 +40,12 @@ class EnvironmentTestCase(unittest.TestCase):
 		print "Food coords"
 		for food in environment.food_list:
 			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
+			print "(" + str(food.x) + ", " + str(food.y) + ")"	
+		environment.tick()
+		print "Food coords"
+		for food in environment.food_list:
+			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
 			print "(" + str(food.x) + ", " + str(food.y) + ")"
-
+		
 if __name__ == "__main__":
 	unittest.main()

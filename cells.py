@@ -13,6 +13,19 @@ class Cell:
 		self.yvel = 0
 		self.task = None
 		self.destination = None
+		self.radius = 1
+		self.energy = 0
+		
+	def try_consume_food(self, food):
+		x_diff = food.x - self.x
+		y_diff = food.y - self.y
+		if math.sqrt(x_diff*x_diff + y_diff*y_diff) < self.radius:
+			#print "Food coord: (", food.x, ",", food.y, ")"
+			#print "Cell coord: (", self.x, ",", self.y, ")"
+			#print "Distance:", math.sqrt(x_diff*x_diff + y_diff*y_diff)
+			self.energy += food.energy
+			return True
+		return False
 
 	def get_pos(self):
 		return (x_pos, y_pos)
