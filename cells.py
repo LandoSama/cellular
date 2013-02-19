@@ -72,15 +72,11 @@ class Cell:
 		self.update_coords()
 	
 			
-	def slow_towards_destination(self):
-<<<<<<< HEAD
-						
-=======
+	def slow_towards_destination(self):			
 		# get total distance to dest
 		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
->>>>>>> 45645cc1e6a8e12b4b60385025b63e84114affbc
 
 	def one_tick(self):
 		if self.task == None:
