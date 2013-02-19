@@ -10,6 +10,10 @@ food is randomly dropped in at a given rate to random locations
 
 cells move towards food if close enough else they just travel, turning a certain amount after a random distance
 
+
+
+-----
+
 cells increase their size and make new organelles by buying them with energy and materials
 
 food is digested in a raction that produces energy and materials
