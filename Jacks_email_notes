@@ -13,6 +13,8 @@ cells move towards food if close enough else they just travel, turning a certain
 
 when the radius of a cell hits 2.0, it stops growing and divides into two cells of radius 1 or something
 
+just touching food could make them eat it
+
 -----
 
 cells increase their size and make new organelles by buying them with energy and materials
@@ -24,7 +26,6 @@ starting organelles could just be a nucleus, a cell membrane, a digester to conv
 
 cells should move and accellerate based on their radius and friction in the enviornment
 
-just touching food could make them eat it
 
 After this there are a few differnt directions I could see us distributing among various groups:
 
