@@ -7,8 +7,13 @@ class FoodTestCase(TestCase):
         self.assertEquals(n.energy, 1)
 
 class Food:
-    def __init__(self):
+    def __init__(self, x, y):
         self.energy = 1
+        self.set_location(x, y)
+    
+    def set_location(self, x, y):
+        self.x = x
+        self.y = y
 
 if __name__ == "__main__":
     unittest.main()
