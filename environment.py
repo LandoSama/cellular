@@ -25,20 +25,20 @@ class Environment:
 	def tick(self):
 		for cell in self.cell_list:
 			cell.one_tick()
-	
-	def debug_output(self):
-		print "Cell coords"
-		for cell in self.cell_list:
-			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
-		print "Food coords"
-		for food in self.food_list:
-			print "(" + str(food.x) + ", " + str(food.y) + ")"
 
 class EnvironmentTestCase(unittest.TestCase):
 	def runTest(self):
 		environment = Environment(10, 10)
 		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'
-		environment.debug_output()
+		
+		print "Cell coords"
+		for cell in environment.cell_list:
+			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
+			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+		print "Food coords"
+		for food in environment.food_list:
+			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
+			print "(" + str(food.x) + ", " + str(food.y) + ")"
 
 if __name__ == "__main__":
 	unittest.main()
