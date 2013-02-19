@@ -11,6 +11,7 @@ food is randomly dropped in at a given rate to random locations
 cells move towards food if close enough else they just travel, turning a certain amount after a random distance
 
 
+when the radius of a cell hits 2.0, it stops growing and divides into two cells of radius 1 or something
 
 -----
 
@@ -18,7 +19,6 @@ cells increase their size and make new organelles by buying them with energy and
 
 food is digested in a raction that produces energy and materials
 
-when the radius of a cell hits 2.0, it stops growing and divides into two cells of radius 1 or something
 
 starting organelles could just be a nucleus, a cell membrane, a digester to convert food into materials and energy, and a ribosomeish contructor to make new organelles
 
