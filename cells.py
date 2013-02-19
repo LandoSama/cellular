@@ -51,7 +51,7 @@ class Cell:
 		# get y distance to dest
 		ydist = abs(self.y - self.destination[1]
 
-		if self.x > self.destination:
+		if self.x > self.destination[0]:
 			self.xvel -= self.max_acceleration(xdist/total_distance)
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed * (-1)
@@ -60,7 +60,7 @@ class Cell:
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed
 			
-		if self.y > self.destination:
+		if self.y > self.destination[1]:
 			self.y -= self.max_acceleration(ydist/total_distance)
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed * (-1)
@@ -73,7 +73,7 @@ class Cell:
 	
 			
 	def slow_towards_destination(self):
-		pass				
+						
 
 	def one_tick(self):
 		if self.task == None:
