@@ -4,6 +4,7 @@ from random import randint
 
 class Cell:
 	def __init__(self,x,y):
+		self.radius = 1
 		self.max_acceleration = 1
 		self.max_speed = 10
 		self.speed = 0
@@ -46,7 +47,25 @@ class Cell:
 	def stop(self):
 		pass
 
+	def destroy(self):
+		#implement later
+		pass
+
+	def divide(self):
+		(child1, child2) = Cell(self.get_pos()), Cell(self.get_pos())
+		cell.destroy()
+		return child1, child2
+
 	def one_tick(self):
+		if self.radius >=2:
+			# create new cell
+			self.divide()
+		elif self.radius ==1:
+			 self.radius += 1
+		else:
+			#this shouldn't happen
+			pass
+
 		if self.task == None:
 			#no task, set task
 			#default: random walk
@@ -69,12 +88,43 @@ class Cell:
 
 
 class TestFunctions(unittest.TestCase):
-	def test_position(self):
-			rand_pos = randint(1, 100), randint(1,100)
-			z = Cell(rand_pos[0], rand_pos[1])
-			assert z.x ==rand_pos[0]
-			assert z.y==rand_pos[1]
+	def test_init(self):
+		x = random.random()
+		y = random.random()
+		test_cell = Cell(x, y)
 
+		assert test_cell != None
+		assert test_cell.radius == 1
+		assert test_cell.max_acceleration == 1
+		assert test_cell.max_speed == 10
+		assert test_cell.speed == 0
+		assert test_cell.x == x
+		assert test_cell.y == y
+		assert test_cell .xvel == 0
+		assert test_cell.yvel == 0
+		assert test_cell.task == None
+		assert test_cell.destination == None
+
+	def setup(self):
+			test_cell = Cell(random.random(), random.random())
+			return test_cell
+
+	def test_divide(self):
+		test_cell = setup()
+		test_child1, test_child2 = test_cell.test_divide()
+
+		# uncomment when destroy() is implemented
+		#assert self == none
+
+		assert test_child1 != None
+		assert test_child2 != None
+
+	def test_destroy(self):
+		pass
+		#uncomment when destroy is implemented
+		#test_cell = setup()
+		#test_cell.test_destroy()
+		#assert test_cell == None
+		
 if __name__ == '__main__':
     unittest.main()
-
