@@ -23,11 +23,12 @@ class Environment:
 		for cell in self.cellList:
 			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
 
-class EnvironmentTestCase(unittest.TestCase):
+class CreationTest(unittest.TestCase):
+	def testCreate(self):
+		self.environment = Environment(10)
 	def runTest(self):
-		environment = Environment(10)
-		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'
-		environment.debug_output()
+		assert self.environment.width > 0 and self.environment.height > 0, 'Environment has no dimensions'
+		self.environment.debug_output()
 
 if __name__ == "__main__":
 	unittest.main()
