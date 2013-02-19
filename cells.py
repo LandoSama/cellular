@@ -6,8 +6,8 @@ def distance(x1,x2,y1,y2):
 
 class Cell:
 	def __init__(self,x,y):
-		self.max_acceleration = 1.0
-		self.max_speed = 10.0
+		self.max_acceleration = 0.02
+		self.max_speed = 0.1
 		self.x = float(x)
 		self.y = float(y)
 		self.xvel = 0.0
@@ -28,8 +28,8 @@ class Cell:
 	def get_destination(self):
 		return self.destination
 
-	#def update_speed(self):
-	#	self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
+	def get_speed(self):
+		return math.sqrt(abs(self.xvel) + abs(self.yvel))
 
 	def update_coords(self):
 		self.x += self.xvel
@@ -68,11 +68,12 @@ class Cell:
 			self.yvel += self.max_acceleration(ydist/total_distance)
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
-				
+		
 		self.update_coords()
-				
-	def stop(self):
-		pass
+	
+			
+	def slow_towards_destination(self):
+		pass				
 
 	def one_tick(self):
 		if self.task == None:
@@ -80,18 +81,26 @@ class Cell:
 			#default: random walk
 			self.random_walk()
 		elif self.task == 'move':
-			pass
-			#check if we have a destination
-			#if yes,
-				#check if we are at the destination or closer than our current speed
-					#set task to stop
-				#if we are further away than that
-					#self.accel_towards_destination()
-			#if no,
-				#something fucked
+			if self.destination == None:
+				self.task = None
+				break
+			
+			distance_to_destination = distance(self.x,destination[0],self.y,destination[1])
+			#check if we are almost at the destination or closer than our current speed			
+			if distance_to_destination >= self.get_speed():
+				#increase speed towards target
+				self.accel_towards_destination()
+			else:
+				#start slowing to a stop
+				self.task = 'stop'
+				self.slow_towards_destination()
+
 		elif self.task == 'stop':
-			pass
-			#slow down to a stop
+			if self.get_speed() == 0:
+				self.task = None
+				self.destination = None
+			else:
+				#still slowing down
 		elif self.task == 'wait':
 			pass
 			#durp sleep or something
