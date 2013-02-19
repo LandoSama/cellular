@@ -15,4 +15,5 @@ Jack Rogers
 
 0.2
 	setup tests to run in one file.
+	test notes
 
