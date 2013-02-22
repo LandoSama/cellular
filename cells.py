@@ -1,4 +1,4 @@
-\import math, unittest
+import math, unittest
 import random
 
 def distance(x1,x2,y1,y2):
@@ -79,12 +79,12 @@ class Cell:
 		ydist = abs(self.y - self.destination[1])
 		
 	def distance_to_start_slowing_down(self):
-		ticks = self.current_speed/self.max_acceleration
-		dist = self.current_speed
-		temp_speed = self.curent_speed
+		ticks = self.get_speed()/self.max_acceleration
+		dist = self.get_speed()
+		temp_speed = self.get_speed()
 		for i in range(ticks):
 			temp_speed -= self.max_acceleration
-			dist += self.current_speed
+			dist += temp_speed
 		return dist
 
 
