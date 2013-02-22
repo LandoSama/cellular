@@ -2,10 +2,12 @@ import math, unittest
 import random
 
 def distance(x1,x2,y1,y2):
+	"""Standard Distance Formula."""
 	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
 class Cell:
 	def __init__(self,x,y):
+	"""Cells begin with a specified position, without velocity, task or destination."""
 		self.max_acceleration = 0.02
 		self.max_speed = 0.1
 		self.x = float(x)
@@ -17,33 +19,47 @@ class Cell:
 		self.destination = None
 
 	def get_pos(self):
+	"""Returns the position of the cell in tuple form."""
 		return (self.x, self.y)
 
 	def get_vel(self):
+	"""Returns the velocity of the cell in tuple form."""
 		return (self.xvel, self.yvel)
 
 	def get_task(self):
+	"""Returns the task of the cell."""
 		return self.task
 
 	def get_destination(self):
+	"""Returns the destination of the cell."""
 		return self.destination
 
 	def get_speed(self):
+	"""Returns the speed of the cell."""
 		return math.sqrt(abs(self.xvel) + abs(self.yvel))
 
 	def update_coords(self):
+	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 		self.x += self.xvel
 		self.y += self.yvel
 
+	def go_to(self,destination):
+	"""Tells the cell to move to the destination specified.
+	Destinations need to be in tuple form."""
+		self.destination = destination
+		self.task = 'move'
+
 	def set_task(self,new_task):
+	"""Sets the task of the cell."""
 		self.task = new_task
 
 	def random_walk(self):
+	"""The cell begins to move towards a random destination."""
 		self.destination = random.random(),random.random()
 		self.set_task('move')
-		pass
 
 	def accel_towards_destination(self):
+	"""Accelerates the cell towards its destination."""
 		# get total distance to dest
 		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
 		# get x distance to dest
@@ -72,11 +88,13 @@ class Cell:
 		self.update_coords()
 	
 			
-	def slow_towards_destination(self):			
+	def slow_towards_destination(self):
+	"""Slows a cell at the maximum rate until it reaches its destination."""
 		# get total distance to dest
 		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
+		# once the calculated number of ticks is 0, the cell ought to be at its destination
 		ticks = self.get_speed()/self.max_acceleration
 		if ticks <= 0:
 			self.xvel = 0.0
@@ -102,12 +120,9 @@ class Cell:
 				self.yvel = self.max_speed
 
 		self.update_coords()
-
-		
-
-		
 		
 	def distance_to_start_slowing_down(self):
+	"""Calculates the distance a cell ought to begin slowing down."""
 		ticks = self.get_speed()/self.max_acceleration
 		dist = self.get_speed()
 		temp_speed = self.get_speed()
@@ -117,54 +132,47 @@ class Cell:
 		return dist
 
 	def one_tick(self):
+	"""What a cell does every arbitrary unit of time."""
 		if self.task == None:
-			#no task, set task
-			#default: random walk
+			# If the cell is doing nothing, reset to the default: Random Walk
 			self.random_walk()
 		elif self.task == 'move':
 			if self.destination == None:
+				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
 				self.task = None
 				break
-			
-			distance_to_destination = distance(self.x,destination[0],self.y,destination[1])
-			#check if we are almost at the destination or closer than our current speed			
-			if distance_to_destination >= self.distance_to_start_slowing_down():
-				#increase speed towards target
+
+			distance_to_destination = distance(self.x,destination[0],self.y,destination[1])			
+			if distance_to_destination > self.distance_to_start_slowing_down():
+				# Keep accelerating until told to do otherwise.
 				self.accel_towards_destination()
 			else:
-				#start slowing to a stop
+				# The cell is to begin to slow down once it has passed its "Hey cell, slow down!" distance.
 				self.task = 'stop'
 
 		elif self.task == 'stop':
 			if self.get_speed() == 0:
+				# If the cell has stopped moving, it's done its job.
 				self.task = None
 				self.destination = None
 			else:
+				# If the cell wants to stop but hasn't yet, deaccelerate.
 				self.slow_towards_destination()
-		elif self.task == 'wait':
-			pass
-			#durp sleep or something
-
 
 class TestFunctions(unittest.TestCase):
+	"""Fingers Crossed."""
+
 	def test_position(self):
 		rand_pos = random.random(), random.random()
 		z = Cell(rand_pos[0], rand_pos[1])
-		assert z.x ==rand_pos[0]
-		assert z.y==rand_pos[1]
+		self.assertEquals(z.x,rand_pos[0])
+		self.assertEquals(z.y,rand_pos[1])
 
 	def test_distance_func(self):
-		"""Just to test the distance function. I THINK I wrote this properly.
-		Correct it if I'm wrong."""
 		self.assertEquals(5,distance(0,3,0,4))
 		self.assertEquals(5,distance(3,0,4,0))
 		self.assertEquals(5,distance(6,9,8,4))
-		self.assertEquals(5,distance(-3,-6,-4,-8))
+		self.assertEquals(5,distance(-3,-6,-4,-8)
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
-
