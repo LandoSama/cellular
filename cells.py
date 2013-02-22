@@ -116,13 +116,14 @@ class TestFunctions(unittest.TestCase):
 			assert z.x ==rand_pos[0]
 			assert z.y==rand_pos[1]
 
-
 	def test_distance_func(self):
-		"""Just to test the distance function."""
-		assert 5 == distance(0,3,0,4)
-		assert 5 == distance(3,0,4,0)
-		assert 5 == distance(6,9,8,4)
-		assert 5 == distance(-3,-6,-4,-8)
+		"""Just to test the distance function. I THINK I wrote this properly.
+		Correct it if I'm wrong."""
+		self.assertEquals(5,distance(0,3,0,4))
+		self.assertEquals(5,distance(3,0,4,0))
+		self.assertEquals(5,distance(6,9,8,4))
+		self.assertEquals(5,distance(-3,-6,-4,-8))
+
 if __name__ == '__main__':
     unittest.main()
 
