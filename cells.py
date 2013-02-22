@@ -1,4 +1,4 @@
-import math, unittest
+\import math, unittest
 import random
 
 def distance(x1,x2,y1,y2):
@@ -77,6 +77,16 @@ class Cell:
 		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
+		
+	def distance_to_start_slowing_down(self):
+		ticks = self.current_speed/self.max_acceleration
+		dist = self.current_speed
+		temp_speed = self.curent_speed
+		for i in range(ticks):
+			temp_speed -= self.max_acceleration
+			dist += self.current_speed
+		return dist
+
 
 	def one_tick(self):
 		if self.task == None:
@@ -90,20 +100,19 @@ class Cell:
 			
 			distance_to_destination = distance(self.x,destination[0],self.y,destination[1])
 			#check if we are almost at the destination or closer than our current speed			
-			if distance_to_destination >= self.get_speed():
+			if distance_to_destination >= self.distance_to_start_slowing_down():
 				#increase speed towards target
 				self.accel_towards_destination()
 			else:
 				#start slowing to a stop
 				self.task = 'stop'
-				self.slow_towards_destination()
 
 		elif self.task == 'stop':
 			if self.get_speed() == 0:
 				self.task = None
 				self.destination = None
 			else:
-				#still slowing down
+				self.slow_towards_destination()
 		elif self.task == 'wait':
 			pass
 			#durp sleep or something
@@ -111,10 +120,10 @@ class Cell:
 
 class TestFunctions(unittest.TestCase):
 	def test_position(self):
-			rand_pos = random.random(), random.random()
-			z = Cell(rand_pos[0], rand_pos[1])
-			assert z.x ==rand_pos[0]
-			assert z.y==rand_pos[1]
+		rand_pos = random.random(), random.random()
+		z = Cell(rand_pos[0], rand_pos[1])
+		assert z.x ==rand_pos[0]
+		assert z.y==rand_pos[1]
 
 
 	def test_distance_func(self):
