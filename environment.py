@@ -37,15 +37,31 @@ class EnvironmentTestCase(unittest.TestCase):
 		for cell in environment.cell_list:
 			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
 			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
-		print "Food coords"
+		print "Food coords before cells eat"
 		for food in environment.food_list:
 			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
 			print "(" + str(food.x) + ", " + str(food.y) + ")"	
 		environment.tick()
-		print "Food coords"
+		print "Food coords after cells eat"
 		for food in environment.food_list:
 			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
 			print "(" + str(food.x) + ", " + str(food.y) + ")"
+			
+		c = Cell(environment.width/2, environment.height/2)
+		environment.cell_list.append(c)
+		food_count = len(environment.food_list)
+		
+		environment.food_list.append(Food(environment.width/2, environment.height/2))		
+		environment.tick()
+		self.assertEqual(len(environment.food_list), food_count) 
+		
+		environment.food_list.append(Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
+		environment.tick()
+		self.assertEqual(len(environment.food_list), food_count)
+		
+		environment.food_list.append(Food(environment.width/2 + c.radius, environment.height/2))
+		environment.tick()
+		self.assertEqual(len(environment.food_list), food_count + 1)
 		
 if __name__ == "__main__":
 	unittest.main()
