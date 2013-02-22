@@ -1,33 +1,51 @@
 from cells import Cell
+from food import Food
 import random
 import unittest
+import math
 
 class Environment:
-	cellList = []
+	cell_list = []
+	food_list = []
 	width = height = 100
 	
-	def __init__(self, count):
+	def __init__(self, food_count, cell_count):
 		#width = raw_input("Width of environment: ")
 		#height = raw_input("Height of environment: ")
-		self.add_cells(count)
+		self.add_food(food_count)
+		self.add_cells(cell_count)
 	
-	def add_cells(self, count):
-		for i in range(1, int(count)):
-			self.cellList.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
+	def add_food(self, food_count):
+		for i in range(food_count):
+			self.food_list.append(Food(random.randint(0, self.width), random.randint(0, self.height)))
+
+	def add_cells(self, cell_count):
+		for i in range(cell_count):
+			self.cell_list.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def tick(self):
-		for cell in self.cellList:
-			cell.tick()
-	
-	def debug_output(self):
-		for cell in self.cellList:
-			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+		for cell in self.cell_list:
+			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
+			cell.one_tick()
 
 class EnvironmentTestCase(unittest.TestCase):
 	def runTest(self):
-		environment = Environment(10)
+		environment = Environment(10, 10)
 		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'
-		environment.debug_output()
-
+		
+		print "Cell coords"
+		for cell in environment.cell_list:
+			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
+			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+		print "Food coords"
+		for food in environment.food_list:
+			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
+			print "(" + str(food.x) + ", " + str(food.y) + ")"	
+		environment.tick()
+		print "Food coords"
+		for food in environment.food_list:
+			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
+			print "(" + str(food.x) + ", " + str(food.y) + ")"
+		
 if __name__ == "__main__":
 	unittest.main()
