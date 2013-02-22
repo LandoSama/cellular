@@ -124,7 +124,7 @@ class Cell:
 
 		if self.y > self.destination[1]:
 			self.y += self.max_acceleration(ydist/total_distance)
-			if abs(self.yvel) >= max_speed
+			if abs(self.yvel) >= max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:
@@ -153,15 +153,14 @@ class Cell:
 			if self.destination == None:
 				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
 				self.task = None
-				break
-
-			distance_to_destination = distance(self.x,destination[0],self.y,destination[1])			
-			if distance_to_destination > self.distance_to_start_slowing_down():
-				# Keep accelerating until told to do otherwise.
-				self.accel_towards_destination()
 			else:
-				# The cell is to begin to slow down once it has passed its "Hey cell, slow down!" distance.
-				self.task = 'stop'
+				distance_to_destination = distance(self.x,destination[0],self.y,destination[1])			
+				if distance_to_destination > self.distance_to_start_slowing_down():
+					# Keep accelerating until told to do otherwise.
+					self.accel_towards_destination()
+				else:
+					# The cell is to begin to slow down once it has passed its "Hey cell, slow down!" distance.
+					self.task = 'stop'
 
 		elif self.task == 'stop':
 			if self.get_speed() == 0:
@@ -193,7 +192,7 @@ class TestFunctions(unittest.TestCase):
 		self.assertEquals(5,distance(0,3,0,4))
 		self.assertEquals(5,distance(3,0,4,0))
 		self.assertEquals(5,distance(6,9,8,4))
-		self.assertEquals(5,distance(-3,-6,-4,-8)
+		self.assertEquals(5,distance(-3,-6,-4,-8))
 
-if __name__ == '__main__':
-    unittest.main()
+##if __name__ == '__main__':
+##    unittest.main()
