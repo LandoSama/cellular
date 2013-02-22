@@ -53,7 +53,7 @@ class EnvironmentTestCase(unittest.TestCase):
 		
 		environment.food_list.append(Food(environment.width/2, environment.height/2))		
 		environment.tick()
-		self.assertEqual(len(environment.food_list), food_count)
+		self.assertEqual(len(environment.food_list), food_count) 
 		
 		environment.food_list.append(Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
 		environment.tick()
