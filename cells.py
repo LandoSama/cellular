@@ -1,5 +1,5 @@
 import math, unittest
-from random import randint
+import random
 
 
 class Cell:
@@ -16,7 +16,7 @@ class Cell:
 		self.destination = None
 
 	def get_pos(self):
-		return (x_pos, y_pos)
+		return (self.x, self.y)
 	
 	def update_speed(self):
 		self.speed += math.sqrt(abs(self.xvel) + abs(self.yvel))
@@ -52,8 +52,8 @@ class Cell:
 		pass
 
 	def divide(self):
-		(child1, child2) = Cell(self.get_pos()), Cell(self.get_pos())
-		cell.destroy()
+		child1, child2 = Cell(*self.get_pos()), Cell(*self.get_pos())
+		self.destroy()
 		return child1, child2
 
 	def one_tick(self):
@@ -93,31 +93,34 @@ class TestFunctions(unittest.TestCase):
 		y = random.random()
 		test_cell = Cell(x, y)
 
-		assert test_cell != None
-		assert test_cell.radius == 1
-		assert test_cell.max_acceleration == 1
-		assert test_cell.max_speed == 10
-		assert test_cell.speed == 0
-		assert test_cell.x == x
-		assert test_cell.y == y
-		assert test_cell .xvel == 0
-		assert test_cell.yvel == 0
-		assert test_cell.task == None
-		assert test_cell.destination == None
+		self.assertNotEqual(test_cell,None)
+		self.assertEqual(test_cell.radius, 1)
+		self.assertEquals(test_cell.max_acceleration, 1)
+		self.assertEquals(test_cell.max_speed, 10)
+		self.assertEquals(test_cell.speed,0)
+		self.assertEquals(test_cell.x,x)
+		self.assertEquals(test_cell.y,y)
+		self.assertEquals(test_cell.xvel, 0)
+		self.assertEquals(test_cell.yvel, 0)
+		self.assertEquals(test_cell.task, None)
+		self.assertEquals(test_cell.destination, None)
 
-	def setup(self):
-			test_cell = Cell(random.random(), random.random())
-			return test_cell
+	def setUp(self):
+			self.test_cell = Cell(random.random(), random.random())
 
 	def test_divide(self):
-		test_cell = setup()
-		test_child1, test_child2 = test_cell.test_divide()
+		test_child1, test_child2 = self.test_cell.divide()
 
 		# uncomment when destroy() is implemented
 		#assert self == none
 
-		assert test_child1 != None
-		assert test_child2 != None
+		cell_location = self.test_cell.get_pos()
+
+		self.assertNotEqual(test_child1, None)
+		self.assertNotEqual(test_child2, None)
+
+		self.assertEqual(test_child1.get_pos(), cell_location)
+		self.assertEqual(test_child2.get_pos(), cell_location)
 
 	def test_destroy(self):
 		pass
