@@ -77,6 +77,35 @@ class Cell:
 		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
+		ticks = self.get_speed()/self.max_acceleration
+		if ticks <= 0:
+			self.xvel = 0.0
+			self.yvel = 0.0
+
+		if self.x > self.destination[0]:
+			self.xvel += self.max_acceleration(xdist/total_distance)
+			if abs(self.xvel) >= self.max_speed:
+				self.xvel = self.max_speed * (-1)
+		else:
+			self.xvel -= self.max_acceleration(xdist/total_distance)
+			if abs(self.xvel) >= self.max_speed:
+				self.xvel = self.max_speed
+
+		if self.y > self.destination[1]:
+			self.y += self.max_acceleration(ydist/total_distance)
+			if abs(self.yvel) >= max_speed
+				self.yvel = self.max_speed * (-1)
+
+		else:
+			self.yvel -= self.max_acceleration(ydist/total_distance)
+			if abs(self.yvel) >= self.max_speed:
+				self.yvel = self.max_speed
+
+		self.update_coords()
+
+		
+
+		
 		
 	def distance_to_start_slowing_down(self):
 		ticks = self.get_speed()/self.max_acceleration
@@ -86,7 +115,6 @@ class Cell:
 			temp_speed -= self.max_acceleration
 			dist += temp_speed
 		return dist
-
 
 	def one_tick(self):
 		if self.task == None:
