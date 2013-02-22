@@ -30,10 +30,11 @@ class Environment:
 
 class CreationTest(unittest.TestCase):
 	def setUp(self):
-		self.environment = Environment(10)
+		self.environment = Environment(10,10)
 	def runTest(self):
-		environment = Environment(10, 10)
-		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'
+		environment = self.environment
+		self.assertTrue(environment.width > 0)
+		self.assertTrue(environment.height > 0)
 		
 		print "Cell coords"
 		for cell in environment.cell_list:
