@@ -28,7 +28,9 @@ class Environment:
 			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
 			cell.one_tick()
 
-class EnvironmentTestCase(unittest.TestCase):
+class CreationTest(unittest.TestCase):
+	def setUp(self):
+		self.environment = Environment(10)
 	def runTest(self):
 		environment = Environment(10, 10)
 		assert environment.width > 0 and environment.height > 0, 'Environment has no dimensions'

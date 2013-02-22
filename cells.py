@@ -1,5 +1,5 @@
 import math, unittest
-from random import randint
+from random import random
 
 
 class Cell:
@@ -81,12 +81,13 @@ class Cell:
 			#durp sleep or something
 
 
-class TestFunctions(unittest.TestCase):
-	def test_position(self):
-			rand_pos = randint(1, 100), randint(1,100)
-			z = Cell(rand_pos[0], rand_pos[1])
-			assert z.x ==rand_pos[0]
-			assert z.y==rand_pos[1]
+class CreationTest(unittest.TestCase):
+	def setUp(self):
+		self.rand_pos = random(), random()
+		self.cell = Cell(self.rand_pos[0], self.rand_pos[1])
+	def runTest(self):
+		self.assertEquals(self.cell.x, self.rand_pos[0])
+		self.assertEquals(self.cell.y, self.rand_pos[1])
 
 if __name__ == '__main__':
     unittest.main()

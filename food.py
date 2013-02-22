@@ -1,11 +1,6 @@
 import unittest
 TestCase = unittest.TestCase
 
-class FoodTestCase(TestCase):
-    def testCreate(self):
-        n = Food()
-        self.assertEquals(n.energy, 1)
-
 class Food:
     def __init__(self, x, y):
         self.energy = 1
@@ -15,5 +10,13 @@ class Food:
         self.x = x
         self.y = y
 
+class CreationTest(TestCase):
+	def setUp(self):
+		self.food_obj = Food(1, 2)
+	def runTest(self):
+		self.assertEquals(self.food_obj.energy, 1)
+		self.assertEquals(self.food_obj.x, 1)
+		self.assertEquals(self.food_obj.y, 2)
+
 if __name__ == "__main__":
-    unittest.main()
+	unittest.main()
