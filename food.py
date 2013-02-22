@@ -6,10 +6,10 @@ class Food:
 		self.energy = 1
 
 class CreationTest(TestCase):
-	def testCreate(self):
-		n = Food()
+	def setUp(self):
+		self.food_obj = Food()
 	def runTest(self):
-		self.assertEquals(n.energy, 1)
+		self.assertEquals(self.food_obj.energy, 1)
 
 if __name__ == "__main__":
 	unittest.main()

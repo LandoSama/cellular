@@ -69,12 +69,12 @@ class Cell:
 
 
 class CreationTest(unittest.TestCase):
-	def testCreate(self):
+	def setUp(self):
 		self.rand_pos = random(), random()
 		self.cell = Cell(self.rand_pos[0], self.rand_pos[1])
 	def runTest(self):
-		assert self.cell.x == self.rand_pos[0]
-		assert self.cell.y == self.rand_pos[1]
+		self.assertEquals(self.cell.x, self.rand_pos[0])
+		self.assertEquals(self.cell.y, self.rand_pos[1])
 
 if __name__ == '__main__':
     unittest.main()
