@@ -81,25 +81,24 @@ class Cell:
 		ydist = abs(self.y - self.destination[1])
 
 		if self.x > self.destination[0]:
-			self.xvel -= self.max_acceleration(xdist/total_distance)
+			self.xvel -= self.max_acceleration*xdist/total_distance
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed * (-1)
 		else:
-			self.xvel += self.max_acceleration(xdist/total_distance)
+			self.xvel += self.max_acceleration*xdist/total_distance
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed
 			
 		if self.y > self.destination[1]:
-			self.y -= self.max_acceleration(ydist/total_distance)
+			self.y -= self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed * (-1)
 		else:
-			self.yvel += self.max_acceleration(ydist/total_distance)
+			self.yvel += self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
 		
 		self.update_coords()
-	
 			
 	def slow_towards_destination(self):
 		"""Slows a cell at the maximum rate until it reaches its destination."""
@@ -114,28 +113,29 @@ class Cell:
 			self.yvel = 0.0
 
 		if self.x > self.destination[0]:
-			self.xvel += self.max_acceleration(xdist/total_distance)
+			self.xvel += self.max_acceleration*xdist/total_distance
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed * (-1)
 		else:
-			self.xvel -= self.max_acceleration(xdist/total_distance)
+			self.xvel -= self.max_acceleration*xdist/total_distance
 			if abs(self.xvel) >= self.max_speed:
 				self.xvel = self.max_speed
 
 		if self.y > self.destination[1]:
-			self.y += self.max_acceleration(ydist/total_distance)
+			self.y += self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:
-			self.yvel -= self.max_acceleration(ydist/total_distance)
+			self.yvel -= self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
 
 		self.update_coords()
 		
 	def distance_to_start_slowing_down(self):
-		"""Calculates the distance a cell ought to begin slowing down."""
+		"""Calculates the distance from the destination that, once past,
+		the cell ought to begin slowing down to reach its destination."""
 		ticks = self.get_speed()/self.max_acceleration
 		dist = self.get_speed()
 		temp_speed = self.get_speed()
@@ -171,28 +171,70 @@ class Cell:
 				# If the cell wants to stop but hasn't yet, deaccelerate.
 				self.slow_towards_destination()
 
-#class CreationTest(unittest.TestCase):
-	#def setUp(self):
-		#self.rand_pos = random(), random()
-		#self.cell = Cell(self.rand_pos[0], self.rand_pos[1])
-	#def runTest(self):
-	#	self.assertEquals(self.cell.x, self.rand_pos[0])
-	#	self.assertEquals(self.cell.y, self.rand_pos[1])
-
 class TestFunctions(unittest.TestCase):
 	"""Fingers Crossed."""
+	
+	def test_tick(self):
+		"""Tests various applications of the one_tick() func."""
+		# When a cell is spawned, it should have no task.
+		c = Cell(0,0)
+		self.assertEquals(c.task,None)
+		# Having no task, one_tick should give the cell a random walk.
+		c.one_tick()
+		self.assertEquals(c.task,'move')
+		# The cell should not yet have gained speed. Testing task 'stop':
+		c.task = 'stop'
+		c.one_tick()
+		self.assertEquals(c.task,None)
+		self.assertEquals(c.destination,None)
+		# Now testing the cell moving from 0,0 to 3,4:
+		c.task = 'move'
+		c.destination = (3,4)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.012)
+		self.assertEquals(c.yvel,0.016)
+		self.assertEquals(c.x,0.012)
+		self.assertEquals(c.y,0.016)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.024)
+		self.assertEquals(c.yvel,0.032)
+		self.assertEquals(c.x,0.036000000000000004)
+		self.assertEquals(c.y,0.048)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.036000000000000004)
+		self.assertEquals(c.yvel,0.048)
+		self.assertEquals(c.x,0.07200000000000001)
+		self.assertEquals(c.y,0.096)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.048)
+		self.assertEquals(c.yvel,0.064)
+		self.assertEquals(c.x,0.12)
+		self.assertEquals(c.y,0.16)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.06)
+		self.assertEquals(c.yvel,0.08)
+		self.assertEquals(c.x,0.18)
+		self.assertEquals(c.y,0.24)
+		c.one_tick()
+		self.assertEquals(c.xvel,0.072)
+		self.assertEquals(c.yvel,0.096)
+		self.assertEquals(c.x,0.252)
+		self.assertEquals(c.y,0.336)
+		# As you can see, this gets ugly/boring fast.
+		
+		
+		
 
 	def test_position(self):
+		"""Gives the cell a random position, and tests if the cell is
+		at that position."""
 		rand_pos = random.random(), random.random()
-		z = Cell(rand_pos[0], rand_pos[1])
-		self.assertEquals(z.x,rand_pos[0])
-		self.assertEquals(z.y,rand_pos[1])
+		c = Cell(rand_pos[0], rand_pos[1])
+		self.assertEquals(c.x,rand_pos[0])
+		self.assertEquals(c.y,rand_pos[1])
 
 	def test_distance_func(self):
-		self.assertEquals(5,distance(0,3,0,4))
-		self.assertEquals(5,distance(3,0,4,0))
-		self.assertEquals(5,distance(6,9,8,4))
-		self.assertEquals(5,distance(-3,-6,-4,-8))
-
-##if __name__ == '__main__':
-##    unittest.main()
+		self.assertEquals(5.0,distance(0,3,0,4))
+		self.assertEquals(5.0,distance(3,0,4,0))
+		self.assertEquals(5.0,distance(6,9,8,4))
+		self.assertEquals(5.0,distance(-3,-6,-4,-8))
