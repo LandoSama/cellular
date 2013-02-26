@@ -75,7 +75,7 @@ class Cell:
 	def random_walk(self):
 		"""The cell begins to move towards a random destination."""
 		self.destination = random.random(),random.random()
-		sel.set_task('move')
+		self.set_task('move')
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
