@@ -73,5 +73,11 @@ class CreationTest(unittest.TestCase):
 		environment.tick()
 		self.assertEqual(len(environment.food_list), food_count + 1)
 		
+		# tests add_cells
+		num_cells = len(self.environment.cell_list)
+		add_cells_count = random.randint(0,100)
+		self.environment.add_cells(add_cells_count)
+		self.assertEqual(len(self.environment.cell_list)-add_cells_count,num_cells)
+		
 if __name__ == "__main__":
 	unittest.main()
