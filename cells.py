@@ -252,3 +252,6 @@ class TestFunctions(unittest.TestCase):
 		self.assertEquals(5.0,distance(3,0,4,0))
 		self.assertEquals(5.0,distance(6,9,8,4))
 		self.assertEquals(5.0,distance(-3,-6,-4,-8))
+
+if __name__ == "__main__":
+	unittest.main()
