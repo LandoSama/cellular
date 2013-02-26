@@ -154,7 +154,7 @@ class Cell:
 				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
 				self.task = None
 			else:
-				distance_to_destination = distance(self.x,destination[0],self.y,destination[1])			
+				distance_to_destination = distance(self.x,self.destination[0],self.y,self.destination[1])			
 				if distance_to_destination > self.distance_to_start_slowing_down():
 					# Keep accelerating until told to do otherwise.
 					self.accel_towards_destination()
