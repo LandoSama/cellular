@@ -85,6 +85,9 @@ class CreationTest(unittest.TestCase):
 		add_cells_count = random.randint(0,100)
 		self.environment.add_cells(add_cells_count)
 		self.assertEqual(len(self.environment.cell_list)-add_cells_count,num_cells)
+
+# test add_food that the right number of food are added
+#	needs to be done
 		
 if __name__ == "__main__":
 	unittest.main()
