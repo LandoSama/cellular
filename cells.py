@@ -107,28 +107,28 @@ class Cell:
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 		# once the calculated number of ticks is 0, the cell ought to be at its destination
-		ticks = self.get_speed()/self.max_acceleration
+		ticks = int(self.get_speed()/self.max_acceleration)
 		if ticks <= 0:
 			self.xvel = 0.0
 			self.yvel = 0.0
-
+	
 		if self.x > self.destination[0]:
 			self.xvel += self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) >= self.max_speed:
+			if abs(self.xvel) > self.max_speed:
 				self.xvel = self.max_speed * (-1)
 		else:
 			self.xvel -= self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) >= self.max_speed:
+			if abs(self.xvel) > self.max_speed:
 				self.xvel = self.max_speed
 
 		if self.y > self.destination[1]:
-			self.y += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) >= max_speed:
+			self.yvel += self.max_acceleration*ydist/total_distance
+			if abs(self.yvel) > max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:
 			self.yvel -= self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) >= self.max_speed:
+			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed
 
 		self.update_coords()
@@ -136,7 +136,7 @@ class Cell:
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		ticks = self.get_speed()/self.max_acceleration
+		ticks = int(self.get_speed()/self.max_acceleration)
 		dist = self.get_speed()
 		temp_speed = self.get_speed()
 		for i in xrange(ticks):
@@ -224,19 +224,19 @@ class TestFunctions(unittest.TestCase):
 
 	def test_slow(self):
 		"""Tests to see if the cell can identify that it needs to begin
-		down, and successfully slows down."""
+		slowing down, and successfully slows down."""
 		c = Cell(0,0)
-		c.task = 'move'
+		c.task = 'stop'
 		c.destination = (0.2,0.2)
 		c.xvel = 0.1
 		c.yvel = 0.1
 		c.one_tick()
 		# Distance to start slowing down = .4472135
 		# Distance = .2828427
-		self.assertAlmostEquals(c.xvel,0.1858578643762681,5)
-		self.assertAlmostEquals(c.yvel,0.1858578643762681,5)
-		self.assertAlmostEquals(c.x,0.1858578643762681,5)
-		self.assertAlmostEquals(c.y,0.1858578643762681,5)
+		self.assertAlmostEquals(c.xvel,0.0858578643762681,5)
+		self.assertAlmostEquals(c.yvel,0.0858578643762681,5)
+		self.assertAlmostEquals(c.x,0.0858578643762681,5)
+		self.assertAlmostEquals(c.y,0.0858578643762681,5)
 		
 
 	def test_position(self):
