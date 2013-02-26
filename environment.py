@@ -31,5 +31,12 @@ class CreationTest(unittest.TestCase):
 		self.assertTrue(self.environment.height > 0)
 		self.environment.debug_output()
 
+		# tests add_cells
+		num_cells = self.cellList.length()
+		add_cells_count = random.randint
+		self.add_cells(count)
+		self.assertEqual(self.cellList.length()-add_cells_count,num_cells)
+		
+
 if __name__ == "__main__":
 	unittest.main()
