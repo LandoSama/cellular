@@ -12,7 +12,7 @@ class Environment:
 		self.add_cells(count)
 	
 	def add_cells(self, count):
-		for i in range(1, int(count)):
+		for i in range(1, int(count)+1):
 			self.cellList.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def tick(self):
@@ -32,10 +32,10 @@ class CreationTest(unittest.TestCase):
 		self.environment.debug_output()
 
 		# tests add_cells
-		num_cells = self.cellList.length()
-		add_cells_count = random.randint
-		self.add_cells(count)
-		self.assertEqual(self.cellList.length()-add_cells_count,num_cells)
+		num_cells = len(self.environment.cellList)
+		add_cells_count = random.randint(0,100)
+		self.environment.add_cells(add_cells_count)
+		self.assertEqual(len(self.environment.cellList)-add_cells_count,num_cells)
 		
 
 if __name__ == "__main__":
