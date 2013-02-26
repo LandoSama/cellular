@@ -220,9 +220,23 @@ class TestFunctions(unittest.TestCase):
 		self.assertEquals(c.yvel,0.096)
 		self.assertEquals(c.x,0.252)
 		self.assertEquals(c.y,0.336)
-		# As you can see, this gets ugly/boring fast.
-		
-		
+		# As you can see, this gets ugly/boring fast.		
+
+	def test_slow(self):
+		"""Tests to see if the cell can identify that it needs to begin
+		down, and successfully slows down."""
+		c = Cell(0,0)
+		c.task = 'move'
+		c.destination = (0.2,0.2)
+		c.xvel = 0.1
+		c.yvel = 0.1
+		c.one_tick()
+		# Distance to start slowing down = .4472135
+		# Distance = .2828427
+		self.assertEquals(c.xvel,0.1858578643762681)
+		self.assertEquals(c.yvel,0.1858578643762681)
+		self.assertEquals(c.x,0.1858578643762681)
+		self.assertEquals(c.y,0.1858578643762681)
 		
 
 	def test_position(self):
