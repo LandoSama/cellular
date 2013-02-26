@@ -20,6 +20,9 @@ class Cell:
 		self.radius = 1
 		self.energy = 0
 		
+# should return true if food is consumed. 
+#	functionality tested from environment
+#
 	def try_consume_food(self, food):
 		x_diff = food.x - self.x
 		y_diff = food.y - self.y
@@ -66,10 +69,13 @@ class Cell:
 		"""Sets the task of the cell."""
 		self.task = new_task
 
+# sets a random destination and sets task to move
+#
+
 	def random_walk(self):
 		"""The cell begins to move towards a random destination."""
 		self.destination = random.random(),random.random()
-		self.set_task('move')
+		sel.set_task('move')
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
@@ -144,9 +150,6 @@ class Cell:
 			dist += temp_speed
 		return dist
 
-# one_tick iterates the life of the cell. 
-#
-
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		if self.task == None:
@@ -179,18 +182,18 @@ class TestFunctions(unittest.TestCase):
 	
 	def test_tick(self):
 		"""Tests various applications of the one_tick() func."""
-# When a cell is spawned, it should have no task.
+		# When a cell is spawned, it should have no task.
 		c = Cell(0,0)
 		self.assertEquals(c.task,None)
-# Having no task, one_tick should give the cell a random walk.
+		# Having no task, one_tick should give the cell a random walk.
 		c.one_tick()
 		self.assertEquals(c.task,'move')
-# The cell should not yet have gained speed. Testing task 'stop':
+		# The cell should not yet have gained speed. Testing task 'stop':
 		c.task = 'stop'
 		c.one_tick()
 		self.assertEquals(c.task,None)
 		self.assertEquals(c.destination,None)
-# Now testing the cell moving from 0,0 to 3,4:
+		# Now testing the cell moving from 0,0 to 3,4:
 		c.task = 'move'
 		c.destination = (3,4)
 		c.one_tick()
@@ -223,7 +226,7 @@ class TestFunctions(unittest.TestCase):
 		self.assertAlmostEquals(c.yvel,0.096,5)
 		self.assertAlmostEquals(c.x,0.252,5)
 		self.assertAlmostEquals(c.y,0.336,5)
-# As you can see, this gets ugly/boring fast.		
+		# As you can see, this gets ugly/boring fast.		
 
 	def test_slow(self):
 		"""Tests to see if the cell can identify that it needs to begin
