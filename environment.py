@@ -39,41 +39,48 @@ class CreationTest(unittest.TestCase):
 	def setUp(self):
 		self.environment = Environment(10,10)
 	def runTest(self):
+# test that environment initializes properly 
 		environment = self.environment
 		self.assertTrue(environment.width > 0)
 		self.assertTrue(environment.height > 0)
 		
+# test that cells are within bounds
+
 		print "Cell coords"
 		for cell in environment.cell_list:
 			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
 			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+
+# food is within bounds
+
 		print "Food coords before cells eat"
 		for food in environment.food_list:
 			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
 			print "(" + str(food.x) + ", " + str(food.y) + ")"	
-		environment.tick()
-		print "Food coords after cells eat"
-		for food in environment.food_list:
-			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
-			print "(" + str(food.x) + ", " + str(food.y) + ")"
-			
+
+# put a cell in the environment and a food in the environment in the middle 
+# tick the time; then see if the cell eats the food
+
 		c = Cell(environment.width/2, environment.height/2)
 		environment.cell_list.append(c)
 		food_count = len(environment.food_list)
 		
 		environment.food_list.append(Food(environment.width/2, environment.height/2))		
 		environment.tick()
+#	check that food list count was deincremented after food is eaten
 		self.assertEqual(len(environment.food_list), food_count) 
 		
+# add another food to test that food epsilon from the boundry of the cell is eaten
 		environment.food_list.append(Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
 		environment.tick()
 		self.assertEqual(len(environment.food_list), food_count)
-		
+
+# add another food just on the boundry of the radius and see that it is not eaten		
 		environment.food_list.append(Food(environment.width/2 + c.radius, environment.height/2))
 		environment.tick()
 		self.assertEqual(len(environment.food_list), food_count + 1)
 		
-		# tests add_cells
+# tests add_cells that the right number of cells are added
 		num_cells = len(self.environment.cell_list)
 		add_cells_count = random.randint(0,100)
 		self.environment.add_cells(add_cells_count)
