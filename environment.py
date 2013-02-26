@@ -9,15 +9,22 @@ class Environment:
 	food_list = []
 	width = height = 100
 	
+# __init__() 
+#	generates 100x100 environment with count, count number of food and cells
+
 	def __init__(self, food_count, cell_count):
-		#width = raw_input("Width of environment: ")
-		#height = raw_input("Height of environment: ")
 		self.add_food(food_count)
 		self.add_cells(cell_count)
 	
+# add_food()
+#	add food_count number of foods at random locations
+
 	def add_food(self, food_count):
 		for i in range(food_count):
 			self.food_list.append(Food(random.randint(0, self.width), random.randint(0, self.height)))
+
+# add_cells()
+#	
 
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
