@@ -139,7 +139,7 @@ class Cell:
 		ticks = self.get_speed()/self.max_acceleration
 		dist = self.get_speed()
 		temp_speed = self.get_speed()
-		for i in range(ticks):
+		for i in xrange(ticks):
 			temp_speed -= self.max_acceleration
 			dist += temp_speed
 		return dist
@@ -191,35 +191,35 @@ class TestFunctions(unittest.TestCase):
 		c.task = 'move'
 		c.destination = (3,4)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.012)
-		self.assertEquals(c.yvel,0.016)
-		self.assertEquals(c.x,0.012)
-		self.assertEquals(c.y,0.016)
+		self.assertAlmostEquals(c.xvel,0.012,5)
+		self.assertAlmostEquals(c.yvel,0.016,5)
+		self.assertAlmostEquals(c.x,0.012,5)
+		self.assertAlmostEquals(c.y,0.016,5)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.024)
-		self.assertEquals(c.yvel,0.032)
-		self.assertEquals(c.x,0.036000000000000004)
-		self.assertEquals(c.y,0.048)
+		self.assertAlmostEquals(c.xvel,0.024,5)
+		self.assertAlmostEquals(c.yvel,0.032,5)
+		self.assertAlmostEquals(c.x,0.036,5)
+		self.assertAlmostEquals(c.y,0.048,5)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.036000000000000004)
-		self.assertEquals(c.yvel,0.048)
-		self.assertEquals(c.x,0.07200000000000001)
-		self.assertEquals(c.y,0.096)
+		self.assertAlmostEquals(c.xvel,0.036,5)
+		self.assertAlmostEquals(c.yvel,0.048,5)
+		self.assertAlmostEquals(c.x,0.072,5)
+		self.assertAlmostEquals(c.y,0.096,5)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.048)
-		self.assertEquals(c.yvel,0.064)
-		self.assertEquals(c.x,0.12)
-		self.assertEquals(c.y,0.16)
+		self.assertAlmostEquals(c.xvel,0.048,5)
+		self.assertAlmostEquals(c.yvel,0.064,5)
+		self.assertAlmostEquals(c.x,0.12,5)
+		self.assertAlmostEquals(c.y,0.16,5)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.06)
-		self.assertEquals(c.yvel,0.08)
-		self.assertEquals(c.x,0.18)
-		self.assertEquals(c.y,0.24)
+		self.assertAlmostEquals(c.xvel,0.06,5)
+		self.assertAlmostEquals(c.yvel,0.08,5)
+		self.assertAlmostEquals(c.x,0.18,5)
+		self.assertAlmostEquals(c.y,0.24,5)
 		c.one_tick()
-		self.assertEquals(c.xvel,0.072)
-		self.assertEquals(c.yvel,0.096)
-		self.assertEquals(c.x,0.252)
-		self.assertEquals(c.y,0.336)
+		self.assertAlmostEquals(c.xvel,0.072,5)
+		self.assertAlmostEquals(c.yvel,0.096,5)
+		self.assertAlmostEquals(c.x,0.252,5)
+		self.assertAlmostEquals(c.y,0.336,5)
 		# As you can see, this gets ugly/boring fast.		
 
 	def test_slow(self):
@@ -233,10 +233,10 @@ class TestFunctions(unittest.TestCase):
 		c.one_tick()
 		# Distance to start slowing down = .4472135
 		# Distance = .2828427
-		self.assertEquals(c.xvel,0.1858578643762681)
-		self.assertEquals(c.yvel,0.1858578643762681)
-		self.assertEquals(c.x,0.1858578643762681)
-		self.assertEquals(c.y,0.1858578643762681)
+		self.assertAlmostEquals(c.xvel,0.1858578643762681,5)
+		self.assertAlmostEquals(c.yvel,0.1858578643762681,5)
+		self.assertAlmostEquals(c.x,0.1858578643762681,5)
+		self.assertAlmostEquals(c.y,0.1858578643762681,5)
 		
 
 	def test_position(self):
