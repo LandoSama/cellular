@@ -3,7 +3,7 @@ import unittest
 import food, environment, cells
 
 #Tests for Cells
-CellsCreationTest = cells.CreationTest
+CellsCreationTest = cells.TestFunctions
 
 #Tests for Environment
 EnvironmentCreationTest = environment.CreationTest
