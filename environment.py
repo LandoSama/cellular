@@ -4,17 +4,29 @@ import random
 import unittest
 import math
 
-class Environment:
+class Environment(object):
+	_instance = None
 	cell_list = []
 	food_list = []
 	width = height = 100
 	
+# __new__() 
+#	generates 100x100 environment with count, count number of food and cells
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			return super(Environment, cls).__new__(
+				cls, *args, **kwargs)
+		return cls._instance
+
 # __init__() 
 #	generates 100x100 environment with count, count number of food and cells
-
-	def __init__(self, food_count, cell_count):
-		self.add_food(food_count)
-		self.add_cells(cell_count)
+	def __init__(self, *args):
+		if Environment._instance is None:
+			Environment._instance = self
+			food_count = args[0]
+			cell_count = args[1]
+			self.add_food(food_count)
+			self.add_cells(cell_count)
 	
 # add_food()
 #	add food_count number of foods at random locations
@@ -39,8 +51,15 @@ class CreationTest(unittest.TestCase):
 	def setUp(self):
 		self.environment = Environment(10,10)
 	def runTest(self):
-# test that environment initializes properly 
 		environment = self.environment
+		
+# test that environment initializes properly
+		x = Environment()
+		y = Environment()
+		self.assertTrue(x is y)
+		
+		self.assertEquals(len(environment.cell_list), 10)
+		
 		self.assertTrue(environment.width > 0)
 		self.assertTrue(environment.height > 0)
 		
