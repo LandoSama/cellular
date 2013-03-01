@@ -2,7 +2,7 @@ import math, unittest
 import random
 
 def distance(x1,x2,y1,y2):
-	"""Standard Distance Formula."""
+	"""Euclidian Distance Formula."""
 	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
 class Cell:
@@ -179,23 +179,29 @@ class Cell:
 
 class TestFunctions(unittest.TestCase):
 	"""Fingers Crossed."""
-	
-	def test_tick(self):
-		"""Tests various applications of the one_tick() func."""
-		# When a cell is spawned, it should have no task.
+
+	def test_stop(self):
+		"""Tests one_tick() removing the tasks and destinations of cells done stopping."""
 		c = Cell(0,0)
-		self.assertEquals(c.task,None)
-		# Having no task, one_tick should give the cell a random walk.
-		c.one_tick()
-		self.assertEquals(c.task,'move')
-		# The cell should not yet have gained speed. Testing task 'stop':
 		c.task = 'stop'
 		c.one_tick()
 		self.assertEquals(c.task,None)
 		self.assertEquals(c.destination,None)
-		# Now testing the cell moving from 0,0 to 3,4:
+
+	def test_taskless(self):
+		"""Tests one_tick() giving taskless cells a random walk."""
+		c = Cell(0,0)
+		# When a cell is spawned, it should have no task.
+		self.assertEquals(c.task,None)
+		c.one_tick()
+		self.assertEquals(c.task,'move')
+	
+	def test_tick(self):
+		"""Tests one_tick() accelerating cells who want to move."""
+		c = Cell(0,0)
 		c.task = 'move'
 		c.destination = (3,4)
+		# Testing the cell moving from (0,0) to (3,4).
 		c.one_tick()
 		self.assertAlmostEquals(c.xvel,0.012,5)
 		self.assertAlmostEquals(c.yvel,0.016,5)
@@ -226,7 +232,7 @@ class TestFunctions(unittest.TestCase):
 		self.assertAlmostEquals(c.yvel,0.096,5)
 		self.assertAlmostEquals(c.x,0.252,5)
 		self.assertAlmostEquals(c.y,0.336,5)
-		# As you can see, this gets ugly/boring fast.		
+		# As you can see, this gets ugly/boring fast.
 
 	def test_slow(self):
 		"""Tests to see if the cell can identify that it needs to begin
@@ -243,7 +249,6 @@ class TestFunctions(unittest.TestCase):
 		self.assertAlmostEquals(c.yvel,0.0858578643762681,5)
 		self.assertAlmostEquals(c.x,0.0858578643762681,5)
 		self.assertAlmostEquals(c.y,0.0858578643762681,5)
-		
 
 	def test_position(self):
 		"""Gives the cell a random position, and tests if the cell is
@@ -254,6 +259,7 @@ class TestFunctions(unittest.TestCase):
 		self.assertEquals(c.y,rand_pos[1])
 
 	def test_distance_func(self):
+		"""Tests the accuracy distance function."""
 		self.assertEquals(5.0,distance(0,3,0,4))
 		self.assertEquals(5.0,distance(3,0,4,0))
 		self.assertEquals(5.0,distance(6,9,8,4))
