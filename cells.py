@@ -17,6 +17,7 @@ class Cell:
 		self.task = None
 		#lets say that a destination is a tuple of the form (x,y) where x and y are real numbers
 		self.destination = None
+		self.destination_type = None
 		self.radius = 1
 		self.energy = 0
 		
@@ -150,11 +151,19 @@ class Cell:
 			dist += temp_speed
 		return dist
 
+	def food_nearby_question_mark(self):
+		
+
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		if self.task == None:
+			# food nearby?
+				# then move towards nearest food
+				# self.destination_type = food
+	
 			# If the cell is doing nothing, reset to the default: Random Walk
 			self.random_walk()
+			
 		elif self.task == 'move':
 			if self.destination == None:
 				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
@@ -162,6 +171,10 @@ class Cell:
 			else:
 				distance_to_destination = distance(self.x,self.destination[0],self.y,self.destination[1])			
 				if distance_to_destination > self.distance_to_start_slowing_down():
+					# if cell.destination_type = food		
+						# if food no longer exsits, self.task = stop
+							# else accelerate towards desitnation
+
 					# Keep accelerating until told to do otherwise.
 					self.accel_towards_destination()
 				else:
