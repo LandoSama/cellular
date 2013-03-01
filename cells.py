@@ -129,7 +129,7 @@ class Cell:
 
 		if self.y > self.destination[1]:
 			self.yvel += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) > max_speed:
+			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:

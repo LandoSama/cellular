@@ -4,7 +4,7 @@ import random
 import unittest
 import math
 
-class Environment:
+class Environment(object):
 	cell_list = []
 	food_list = []
 	width = height = 100
@@ -34,6 +34,20 @@ class Environment:
 		for cell in self.cell_list:
 			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
 			cell.one_tick()
+
+# print_table()
+#	output a table of each cell state to a text file
+
+	def print_table(self,filename):
+		table_file = open(filename,"a")
+		table_file.write("\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tdestn\tradius\tenergy\n")
+		counter = 0
+		for cell in self.cell_list:
+			table_file.write("Cell_"+str(counter)+"\t"+str(cell.x)+"\t"+str(cell.y)+"\t"+str(cell.xvel)+"\t"+str(cell.yvel)+"\t"+ \
+			str(cell.task)+"\t"+str(cell.destination)+"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			counter += 1
+		table_file.close()
+		
 
 class CreationTest(unittest.TestCase):
 	def setUp(self):
@@ -89,5 +103,28 @@ class CreationTest(unittest.TestCase):
 # test add_food that the right number of food are added
 #	needs to be done
 		
-if __name__ == "__main__":
-	unittest.main()
+#if __name__ == "__main__":
+#	unittest.main()
+
+
+def main():
+	tbl = "Cell_Table.txt"
+	Env = Environment(0,0)
+	Env.cell_list.append(Cell(0,0))
+	Env.cell_list.append(Cell(1,2))
+	Env.cell_list.append(Cell(7,5))
+	Env.cell_list.append(Cell(6,9))
+	Env.cell_list.append(Cell(-7,-7))
+	Env.print_table(tbl)
+	Env.tick()
+	Env.print_table(tbl)
+	Env.tick()
+	Env.print_table(tbl)
+	for run in xrange(5):
+		Env.tick()
+	Env.print_table(tbl)
+	for run in xrange(50):
+		Env.tick()
+	Env.print_table(tbl)
+
+main()
