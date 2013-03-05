@@ -113,9 +113,9 @@ class CreationTest(unittest.TestCase):
 #if __name__ == "__main__":
 #	unittest.main()
 
-""" 
-def test_print_table():
-	tbl = "Cell_Table.txt"
+def debug_print_table():
+	"""This probably shouldn't be at the end of the file, but nano doesn't have copy and paste."""
+	tbl = "Debug_Cell_Table.txt"
 	Env = Environment(0,0)
 	Env.cell_list.append(Cell(0,0))
 	Env.cell_list.append(Cell(1,2))
@@ -133,6 +133,3 @@ def test_print_table():
 	for run in xrange(50):
 		Env.tick()
 	Env.print_table(tbl)
-
-test_print_table()
-"""
