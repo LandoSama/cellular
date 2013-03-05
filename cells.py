@@ -103,8 +103,6 @@ class Cell:
 			self.yvel += self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
-		
-		self.update_coords()
 			
 	def slow_towards_destination(self):
 		"""Slows a cell at the maximum rate until it reaches its destination."""
@@ -136,8 +134,6 @@ class Cell:
 			self.yvel -= self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed
-
-		self.update_coords()
 		
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -176,6 +172,7 @@ class Cell:
 			else:
 				# If the cell wants to stop but hasn't yet, deaccelerate.
 				self.slow_towards_destination()
+		update_coords()
 
 class TestFunctions(unittest.TestCase):
 	"""Fingers Crossed."""
