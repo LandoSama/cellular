@@ -1,5 +1,6 @@
 import math, unittest
 import random
+import environment
 
 def distance(x1,x2,y1,y2):
 	"""Euclidian Distance Formula."""
@@ -75,7 +76,8 @@ class Cell:
 
 	def random_walk(self):
 		"""The cell begins to move towards a random destination."""
-		self.destination = random.random(),random.random()
+		tempWorld = environment.Environment()
+		self.destination = random.uniform(0,tempWorld.width),random.uniform(0,tempWorld.height),
 		self.set_task('move')
 
 	def accel_towards_destination(self):
@@ -130,7 +132,7 @@ class Cell:
 
 		if self.y > self.destination[1]:
 			self.yvel += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) > max_speed:
+			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:
@@ -152,6 +154,7 @@ class Cell:
 		return dist
 
 	def food_nearby_question_mark(self):
+		pass
 		
 
 	def one_tick(self):
