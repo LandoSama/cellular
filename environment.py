@@ -39,12 +39,19 @@ class Environment(object):
 #	output a table of each cell state to a text file
 
 	def print_table(self,filename):
+		"""Prints a table to a textfile with the provided name."""
 		table_file = open(filename,"a")
-		table_file.write("\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tdestn\tradius\tenergy\n")
+		table_file.write("\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
 		counter = 0
 		for cell in self.cell_list:
-			table_file.write("Cell_"+str(counter)+"\t"+str(cell.x)+"\t"+str(cell.y)+"\t"+str(cell.xvel)+"\t"+str(cell.yvel)+"\t"+ \
-			str(cell.task)+"\t"+str(cell.destination)+"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.x,4))+"\t"+str(round(cell.y,4))+\
+			"\t"+str(round(cell.xvel,4))+"\t"+str(round(cell.yvel,4))+"\t"+str(cell.task)+"\t")
+			if type(cell.destination) == type(None):
+				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			elif type(cell.destination) == type((0,0)):
+				table_file.write(str(round(cell.destination[0],4))+"\t"+str(round(cell.destination[1],4))+\
+				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			else: print type(cell.destination),cell.destination,"\n"
 			counter += 1
 		table_file.close()
 		
@@ -106,8 +113,8 @@ class CreationTest(unittest.TestCase):
 #if __name__ == "__main__":
 #	unittest.main()
 
-
-def main():
+""" 
+def test_print_table():
 	tbl = "Cell_Table.txt"
 	Env = Environment(0,0)
 	Env.cell_list.append(Cell(0,0))
@@ -127,4 +134,5 @@ def main():
 		Env.tick()
 	Env.print_table(tbl)
 
-main()
+test_print_table()
+"""
