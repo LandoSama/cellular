@@ -1,9 +1,5 @@
-import math, unittest
-import random
-
-def distance(x1,x2,y1,y2):
-	"""Euclidian Distance Formula."""
-	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
+import unittest, util, environment as env
+import random, math
 
 class Cell:
 	def __init__(self,x,y):
@@ -19,20 +15,6 @@ class Cell:
 		self.destination = None
 		self.radius = 1
 		self.energy = 0
-		
-# should return true if food is consumed. 
-#	functionality tested from environment
-#
-	def try_consume_food(self, food):
-		x_diff = food.x - self.x
-		y_diff = food.y - self.y
-		if math.sqrt(x_diff*x_diff + y_diff*y_diff) < self.radius:
-			#print "Food coord: (", food.x, ",", food.y, ")"
-			#print "Cell coord: (", self.x, ",", self.y, ")"
-			#print "Distance:", math.sqrt(x_diff*x_diff + y_diff*y_diff)
-			self.energy += food.energy
-			return True
-		return False
 
 	def get_pos(self):
 		"""Returns the position of the cell in tuple form."""
@@ -80,7 +62,7 @@ class Cell:
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
 		# get total distance to dest
-		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
+		total_distance = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 		# get x distance to dest
 		xdist = abs(self.x - self.destination[0])
 		# get y distance to dest
@@ -109,7 +91,7 @@ class Cell:
 	def slow_towards_destination(self):
 		"""Slows a cell at the maximum rate until it reaches its destination."""
 		# get total distance to dest
-		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
+		total_distance = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 		# once the calculated number of ticks is 0, the cell ought to be at its destination
@@ -150,8 +132,16 @@ class Cell:
 			dist += temp_speed
 		return dist
 
+	def eat(self):
+		e = env.Environment()
+		for f in e.food_at(self.x, self.y, self.radius):
+			self.energy += f.energy
+			e.remove_food(f)
+
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
+		self.eat()
+		
 		if self.task == None:
 			# If the cell is doing nothing, reset to the default: Random Walk
 			self.random_walk()
@@ -160,7 +150,7 @@ class Cell:
 				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
 				self.task = None
 			else:
-				distance_to_destination = distance(self.x,self.destination[0],self.y,self.destination[1])			
+				distance_to_destination = util.distance(self.x,self.destination[0],self.y,self.destination[1])			
 				if distance_to_destination > self.distance_to_start_slowing_down():
 					# Keep accelerating until told to do otherwise.
 					self.accel_towards_destination()
@@ -260,10 +250,10 @@ class TestFunctions(unittest.TestCase):
 
 	def test_distance_func(self):
 		"""Tests the accuracy distance function."""
-		self.assertEquals(5.0,distance(0,3,0,4))
-		self.assertEquals(5.0,distance(3,0,4,0))
-		self.assertEquals(5.0,distance(6,9,8,4))
-		self.assertEquals(5.0,distance(-3,-6,-4,-8))
+		self.assertEquals(5.0,util.distance(0,3,0,4))
+		self.assertEquals(5.0,util.distance(3,0,4,0))
+		self.assertEquals(5.0,util.distance(6,9,8,4))
+		self.assertEquals(5.0,util.distance(-3,-6,-4,-8))
 
 if __name__ == "__main__":
 	unittest.main()
