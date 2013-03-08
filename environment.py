@@ -4,7 +4,7 @@ import random
 import unittest
 import math
 
-class Environment:
+class Environment(object):
 	cell_list = []
 	food_list = []
 	width = height = 100
@@ -34,6 +34,27 @@ class Environment:
 		for cell in self.cell_list:
 			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
 			cell.one_tick()
+
+# print_table()
+#	output a table of each cell state to a text file
+
+	def print_table(self,filename):
+		"""Prints a table to a textfile with the provided name."""
+		table_file = open(filename,"a")
+		table_file.write("\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
+		counter = 0
+		for cell in self.cell_list:
+			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.x,4))+"\t"+str(round(cell.y,4))+\
+			"\t"+str(round(cell.xvel,4))+"\t"+str(round(cell.yvel,4))+"\t"+str(cell.task)+"\t")
+			if type(cell.destination) == type(None):
+				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			elif type(cell.destination) == type((0,0)):
+				table_file.write(str(round(cell.destination[0],4))+"\t"+str(round(cell.destination[1],4))+\
+				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+			else: print type(cell.destination),cell.destination,"\n"
+			counter += 1
+		table_file.close()
+		
 
 class CreationTest(unittest.TestCase):
 	def setUp(self):
@@ -89,5 +110,26 @@ class CreationTest(unittest.TestCase):
 # test add_food that the right number of food are added
 #	needs to be done
 		
-if __name__ == "__main__":
-	unittest.main()
+#if __name__ == "__main__":
+#	unittest.main()
+
+def debug_print_table():
+	"""This probably shouldn't be at the end of the file, but nano doesn't have copy and paste."""
+	tbl = "Debug_Cell_Table.txt"
+	Env = Environment(0,0)
+	Env.cell_list.append(Cell(0,0))
+	Env.cell_list.append(Cell(1,2))
+	Env.cell_list.append(Cell(7,5))
+	Env.cell_list.append(Cell(6,9))
+	Env.cell_list.append(Cell(-7,-7))
+	Env.print_table(tbl)
+	Env.tick()
+	Env.print_table(tbl)
+	Env.tick()
+	Env.print_table(tbl)
+	for run in xrange(5):
+		Env.tick()
+	Env.print_table(tbl)
+	for run in xrange(50):
+		Env.tick()
+	Env.print_table(tbl)

@@ -1,3 +1,7 @@
+# For now, until the singleton is working and I can pull the size of the environment from the environment objects, these will do:
+ENVIRO_X = 1
+ENVIRO_Y = 1
+
 import math, unittest
 import random
 
@@ -58,6 +62,8 @@ class Cell:
 		"""Changes the cell's position based on its velocity, a.k.a. movement."""
 		self.x += self.xvel
 		self.y += self.yvel
+		self.x = self.x % ENVIRO_X
+		self.y = self.y % ENVIRO_Y
 
 	def go_to(self,destination):
 		"""Tells the cell to move to the destination specified.
@@ -103,8 +109,6 @@ class Cell:
 			self.yvel += self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) >= self.max_speed:
 				self.yvel = self.max_speed
-		
-		self.update_coords()
 			
 	def slow_towards_destination(self):
 		"""Slows a cell at the maximum rate until it reaches its destination."""
@@ -129,15 +133,13 @@ class Cell:
 
 		if self.y > self.destination[1]:
 			self.yvel += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) > max_speed:
+			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed * (-1)
 
 		else:
 			self.yvel -= self.max_acceleration*ydist/total_distance
 			if abs(self.yvel) > self.max_speed:
 				self.yvel = self.max_speed
-
-		self.update_coords()
 		
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -176,6 +178,7 @@ class Cell:
 			else:
 				# If the cell wants to stop but hasn't yet, deaccelerate.
 				self.slow_towards_destination()
+		update_coords()
 
 class TestFunctions(unittest.TestCase):
 	"""Fingers Crossed."""
