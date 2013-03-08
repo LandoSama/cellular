@@ -4,6 +4,10 @@ import random
 import unittest
 import math
 
+def distance(x1,x2,y1,y2):
+	"""Euclidian Distance Formula."""
+	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
+
 class Environment(object):
 	_instance = None
 	cell_list = []
@@ -42,10 +46,40 @@ class Environment(object):
 		for i in range(cell_count):
 			self.cell_list.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
+	def update_closest_food(self):
+		for cell in self.cell_list:
+			closest = None
+			closest_dist = None
+			tup = cell.get_pos()
+			x1 = tup[0]
+			y1 = tup[1]
+			for food in self.food_list:
+				x2 = food.x
+				y2 = food.y
+				dist = distance(x1,x2,y1,y2)
+				if closest == None:
+					closest = food
+					closest_dist = dist
+				else:
+					if dist < closest_dist:
+						closest = food
+						closest_dist = dist
+					else:
+						pass
+			cell.closest_food = closest
+			cell.distance_to_closest_food = closest_dist
+			
+				
+			
+			
+	
 	def tick(self):
 		for cell in self.cell_list:
 			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
+			self.update_closest_food(self)
 			cell.one_tick()
+			
+	
 
 class CreationTest(unittest.TestCase):
 	def setUp(self):

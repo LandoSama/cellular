@@ -22,6 +22,10 @@ class Cell:
 		self.radius = 1
 		self.energy = 0
 		
+		#closest piece of food
+		self.closest_food = None
+		self.distance_to_closest_food = None
+		
 # should return true if food is consumed. 
 #	functionality tested from environment
 #
@@ -79,6 +83,9 @@ class Cell:
 		tempWorld = environment.Environment()
 		self.destination = random.uniform(0,tempWorld.width),random.uniform(0,tempWorld.height),
 		self.set_task('move')
+		
+	def set_food_as_destination(self):
+		pass
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
