@@ -1,14 +1,17 @@
+import environment as env
 import unittest
 TestCase = unittest.TestCase
 
 class Food:
-    def __init__(self, x, y):
-        self.energy = 1
-        self.set_location(x, y)
-    
-    def set_location(self, x, y):
-        self.x = x
-        self.y = y
+	def __init__(self, x, y):
+		self.energy = 1
+		self.set_location(x, y)
+	
+	def set_location(self, x, y):
+		if x < 0 or x > env.Environment().width or y < 0 or y > env.Environment().height:
+			raise ValueError
+		self.x = x
+		self.y = y
 
 class CreationTest(TestCase):
 	def setUp(self):
