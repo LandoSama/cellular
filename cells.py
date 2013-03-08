@@ -1,3 +1,7 @@
+# For now, until the singleton is working and I can pull the size of the environment from the environment objects, these will do:
+ENVIRO_X = 1
+ENVIRO_Y = 1
+
 import math, unittest
 import random
 
@@ -58,6 +62,8 @@ class Cell:
 		"""Changes the cell's position based on its velocity, a.k.a. movement."""
 		self.x += self.xvel
 		self.y += self.yvel
+		self.x = self.x % ENVIRO_X
+		self.y = self.y % ENVIRO_Y
 
 	def go_to(self,destination):
 		"""Tells the cell to move to the destination specified.
