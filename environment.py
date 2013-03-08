@@ -31,12 +31,13 @@ class Environment(singleton.Singleton):
 
 class CreationTest(unittest.TestCase):
 	def runTest(self):
-		environment = Environment() #environment already initialized in test.pyb
+		environment = Environment() #environment already initialized in test.py
 
 # test that environment is a singleton
 		self.assertTrue(Environment() is environment)
 # test that environment initializes properly
 		self.assertEquals(len(environment.cell_list), 10)
+		self.assertEquals(len(environment.food_set), 10)
 		self.assertTrue(environment.width > 0)
 		self.assertTrue(environment.height > 0)
 		
@@ -72,9 +73,6 @@ class CreationTest(unittest.TestCase):
 		add_cells_count = random.randint(0,100)
 		environment.add_cells(add_cells_count)
 		self.assertEqual(len(environment.cell_list)-add_cells_count,num_cells)
-
-# test add_food that the right number of food are added
-#	needs to be done
 		
 if __name__ == "__main__":
 	unittest.main()
