@@ -7,8 +7,8 @@ class Food:
         self.set_location(x, y)
     
     def set_location(self, x, y):
-        self.x = x
-        self.y = y
+        self.x = x % environment.width
+        self.y = y % environment.height
 
 class CreationTest(TestCase):
 	def setUp(self):
@@ -20,3 +20,4 @@ class CreationTest(TestCase):
 
 if __name__ == "__main__":
 	unittest.main()
+
