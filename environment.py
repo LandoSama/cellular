@@ -13,6 +13,7 @@ class Environment(object):
 	cell_list = []
 	food_list = []
 	width = height = 100
+	turn = 0
 	
 # __new__() 
 #	generates 100x100 environment with count, count number of food and cells
@@ -47,6 +48,7 @@ class Environment(object):
 			self.cell_list.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def update_closest_food(self):
+		print 'did shit'
 		for cell in self.cell_list:
 			closest = None
 			closest_dist = None
@@ -74,10 +76,12 @@ class Environment(object):
 			
 	
 	def tick(self):
+		if self.turn % 20 == 0:
+			self.update_closest_food()
 		for cell in self.cell_list:
 			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
-			self.update_closest_food(self)
 			cell.one_tick()
+		self.turn += 1
 			
 	
 

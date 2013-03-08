@@ -167,12 +167,14 @@ class Cell:
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		if self.task == None:
-			# food nearby?
-				# then move towards nearest food
-				# self.destination_type = food
-	
-			# If the cell is doing nothing, reset to the default: Random Walk
-			self.random_walk()
+			# food nearby? then go to it.
+			if self.distance_to_closest_food < 20:
+				self.destination = (self.closest_food.x,self.closest_food.y)
+				self.destination_type = 'food'
+				self.task = 'move'
+			# If the cell is doing nothing and there isn't any close food: Random Walk
+			else:
+				self.random_walk()
 			
 		elif self.task == 'move':
 			if self.destination == None:
