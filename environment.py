@@ -1,51 +1,25 @@
-from cells import Cell
-from food import Food
-import random
-import unittest
-import math
+import cells, food, random, unittest, util, singleton
 
-def distance(x1,x2,y1,y2):
-	"""Euclidian Distance Formula."""
-	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
-class Environment(object):
-	_instance = None
-	cell_list = []
-	food_list = []
-	width = height = 100
-	turn = 0
-	
-# __new__() 
-#	generates 100x100 environment with count, count number of food and cells
-	def __new__(cls, *args, **kwargs):
-		if not cls._instance:
-			return super(Environment, cls).__new__(
-				cls, *args, **kwargs)
-		return cls._instance
-
-# __init__() 
-#	generates 100x100 environment with count, count number of food and cells
-	def __init__(self, *args):
-		if Environment._instance is None:
-			Environment._instance = self
-			food_count = args[0]
-			cell_count = args[1]
-			self.add_food(food_count)
-			self.add_cells(cell_count)
-	
-# add_food()
-#	add food_count number of foods at random locations
+class Environment(singleton.Singleton):
+	def init_once(self, food_count, cells_count):
+		"""Generate a 100x100 environment with specified amount of food and cells"""
+		#print "init_once:", id(self) #should print only once
+		self.cell_list = []
+		self.food_set = set()
+		self.width = self.height = 100.0
+		self.add_food(food_count)
+		self.add_cells(cells_count)
+		self.turn = 0
 
 	def add_food(self, food_count):
+		"""Add food_count number of foods at random locations"""
 		for i in range(food_count):
-			self.food_list.append(Food(random.randint(0, self.width), random.randint(0, self.height)))
-
-# add_cells()
-#	
+			self.food_set.add(food.Food(random.randint(0, self.width), random.randint(0, self.height)))
 
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
-			self.cell_list.append(Cell(random.randint(0, self.width), random.randint(0, self.height)))
+			self.cell_list.append(cells.Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def update_closest_food(self):
 		print 'did shit'
@@ -55,10 +29,10 @@ class Environment(object):
 			tup = cell.get_pos()
 			x1 = tup[0]
 			y1 = tup[1]
-			for food in self.food_list:
+			for food in self.food_set:
 				x2 = food.x
 				y2 = food.y
-				dist = distance(x1,x2,y1,y2)
+				dist = util.distance(x1,x2,y1,y2)
 				if closest == None:
 					closest = food
 					closest_dist = dist
@@ -70,81 +44,65 @@ class Environment(object):
 						pass
 			cell.closest_food = closest
 			cell.distance_to_closest_food = closest_dist
-			
-				
-			
-			
-	
+							
 	def tick(self):
 		if self.turn % 20 == 0:
 			self.update_closest_food()
 		for cell in self.cell_list:
-			self.food_list[:] = [food for food in self.food_list if not(cell.try_consume_food(food))]
 			cell.one_tick()
 		self.turn += 1
-			
+
+	def food_at(self, x, y, r):
+		return [food for food in self.food_set if util.distance(x, food.x, y, food.y) <= r]
+
+	def remove_food(self, food):
+		self.food_set.remove(food)
 	
 
 class CreationTest(unittest.TestCase):
-	def setUp(self):
-		self.environment = Environment(10,10)
 	def runTest(self):
-		environment = self.environment
-		
+		environment = Environment() #environment already initialized in test.py
+
+# test that environment is a singleton
+		self.assertTrue(Environment() is environment)
 # test that environment initializes properly
-		x = Environment()
-		y = Environment()
-		self.assertTrue(x is y)
-		
 		self.assertEquals(len(environment.cell_list), 10)
-		
+		self.assertEquals(len(environment.food_set), 10)
 		self.assertTrue(environment.width > 0)
 		self.assertTrue(environment.height > 0)
 		
 # test that cells are within bounds
-
-		print "Cell coords"
 		for cell in environment.cell_list:
 			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
-			print "(" + str(cell.x) + ", " + str(cell.y) + ")"
+# ..and food is within bounds
+		for f in environment.food_set:
+			self.assertTrue(f.x >= 0 and f.x <= environment.width and f.y >= 0 and f.y <= environment.height, "Food location out of bounds.")
 
-# food is within bounds
-
-		print "Food coords before cells eat"
-		for food in environment.food_list:
-			self.assertTrue(food.x >= 0 and food.x <= environment.width and food.y >= 0 and food.y <= environment.height, "Food location out of bounds.")
-			print "(" + str(food.x) + ", " + str(food.y) + ")"	
-
-# put a cell in the environment and a food in the environment in the middle 
-# tick the time; then see if the cell eats the food
-
-		c = Cell(environment.width/2, environment.height/2)
+# test that a cell will find and eat food underneath it
+		c = cells.Cell(environment.width/2, environment.height/2)
 		environment.cell_list.append(c)
-		food_count = len(environment.food_list)
-		
-		environment.food_list.append(Food(environment.width/2, environment.height/2))		
+		food_count = len(environment.food_set)
+
+		environment.food_set.add(food.Food(environment.width/2, environment.height/2))		
 		environment.tick()
-#	check that food list count was deincremented after food is eaten
-		self.assertEqual(len(environment.food_list), food_count) 
+#	check that food list count was decremented after food is eaten
+		self.assertEqual(len(environment.food_set), food_count) 
 		
 # add another food to test that food epsilon from the boundry of the cell is eaten
-		environment.food_list.append(Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
+		environment.food_set.add(food.Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
 		environment.tick()
-		self.assertEqual(len(environment.food_list), food_count)
+		self.assertEqual(len(environment.food_set), food_count)
 
 # add another food just on the boundry of the radius and see that it is not eaten		
-		environment.food_list.append(Food(environment.width/2 + c.radius, environment.height/2))
+		environment.food_set.add(food.Food(environment.width/2 + c.radius, environment.height/2))
 		environment.tick()
-		self.assertEqual(len(environment.food_list), food_count + 1)
+		self.assertEqual(len(environment.food_set), food_count + 1)
 		
 # tests add_cells that the right number of cells are added
-		num_cells = len(self.environment.cell_list)
+		num_cells = len(environment.cell_list)
 		add_cells_count = random.randint(0,100)
-		self.environment.add_cells(add_cells_count)
-		self.assertEqual(len(self.environment.cell_list)-add_cells_count,num_cells)
-
-# test add_food that the right number of food are added
-#	needs to be done
+		environment.add_cells(add_cells_count)
+		self.assertEqual(len(environment.cell_list)-add_cells_count,num_cells)
 		
 if __name__ == "__main__":
 	unittest.main()
