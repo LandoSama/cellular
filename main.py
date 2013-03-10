@@ -14,5 +14,8 @@ def main():
 	for i in range(number_of_test_ticks):
 		print 'food: ',len(World.food_set),'\t\tTick: ',i
 		World.tick()
-		World.print_table("Main_Test.txt","Tick: "+str(i))	
+		World.print_table("Main_Test.txt","Tick: "+str(i))
+		if len(World.food_set) == 0:
+			break
+
 main()

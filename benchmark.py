@@ -25,6 +25,8 @@ def main():
 		#if this_run > max_run: max_run = this_run
 		print 'food: ',len(World.food_set),'\t\tTick: ',i, this_run, ', avg:', sum_runs/count_runs
 		t1 = time()
+		if len(World.food_set) == 0:
+			break
 	
 	
 main()
