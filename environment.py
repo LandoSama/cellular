@@ -56,12 +56,12 @@ class Environment(singleton.Singleton):
 		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
 		counter = 0
 		for cell in self.cell_list:
-			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.x,4))+"\t"+str(round(cell.y,4))+\
-			"\t"+str(round(cell.xvel,4))+"\t"+str(round(cell.yvel,4))+"\t"+str(cell.task)+"\t")
+			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.pos.x,4))+"\t"+str(round(cell.pos.y,4))+\
+			"\t"+str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t"+str(cell.task)+"\t")
 			if type(cell.destination) == type(None):
 				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
 			elif type(cell.destination) == type((0,0)):
-				table_file.write(str(round(cell.destination[0],4))+"\t"+str(round(cell.destination[1],4))+\
+				table_file.write(str(round(cell.destination.x,4))+"\t"+str(round(cell.destination.y,4))+\
 				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
 			else: print type(cell.destination),cell.destination,"\n"
 			counter += 1
