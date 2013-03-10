@@ -1,7 +1,10 @@
-import math
-import environment
+import math, environment, vector
 
 def distance(x1,x2,y1,y2):
 	"""Euclidean Distance on a Torus."""
 	e = environment.Environment()
-	return	math.sqrt(min(|x1 - x2|, e.width - |x1 - x2|)^2 + min(|y1 - y2|, e.height - |y1-y2|)^2)
+	xdiff = abs(x1 - x2)
+	ydiff = abs(y1 - y2)
+	return math.sqrt(min(xdiff, e.width  - xdiff)**2 + \
+					 min(ydiff, e.height - ydiff)**2)				 
+	#return vector.Vector(x1,y1).distance_to(vector.Vector(x2,y2))

@@ -1,4 +1,5 @@
 import cells, food, random, unittest, util, singleton
+from vector import Vector
 
 
 class Environment(singleton.Singleton):
@@ -22,17 +23,11 @@ class Environment(singleton.Singleton):
 			self.cell_list.append(cells.Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def update_closest_food(self):
-		print 'did shit'
 		for cell in self.cell_list:
 			closest = None
 			closest_dist = None
-			tup = cell.get_pos()
-			x1 = tup[0]
-			y1 = tup[1]
 			for food in self.food_set:
-				x2 = food.x
-				y2 = food.y
-				dist = util.distance(x1,x2,y1,y2)
+				dist = cell.pos.distance_to(food.pos)
 				if closest == None:
 					closest = food
 					closest_dist = dist
@@ -52,8 +47,8 @@ class Environment(singleton.Singleton):
 			cell.one_tick()
 		self.turn += 1
 
-	def food_at(self, x, y, r):
-		return [food for food in self.food_set if util.distance(x, food.x, y, food.y) <= r]
+	def food_at(self, pos, r):
+		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
 
 	def remove_food(self, food):
 		self.food_set.remove(food)
@@ -73,11 +68,12 @@ class CreationTest(unittest.TestCase):
 		
 # test that cells are within bounds
 		for cell in environment.cell_list:
-			self.assertTrue(cell.x >= 0 and cell.x <= environment.width and cell.y >= 0 and cell.y <= environment.height, "Cell location out of bounds.")
+			self.assertTrue(cell.pos.x >= 0 and cell.pos.x <= environment.width and cell.pos.y >= 0 and cell.pos.y <= environment.height, "Cell location out of bounds.")
 # ..and food is within bounds
 		for f in environment.food_set:
 			self.assertTrue(f.x >= 0 and f.x <= environment.width and f.y >= 0 and f.y <= environment.height, "Food location out of bounds.")
 
+		environment.cell_list = []
 # test that a cell will find and eat food underneath it
 		c = cells.Cell(environment.width/2, environment.height/2)
 		environment.cell_list.append(c)
@@ -93,8 +89,8 @@ class CreationTest(unittest.TestCase):
 		environment.tick()
 		self.assertEqual(len(environment.food_set), food_count)
 
-# add another food just on the boundry of the radius and see that it is not eaten		
-		environment.food_set.add(food.Food(environment.width/2 + c.radius, environment.height/2))
+# add another food just on the boundry of the radius and see that it is not eaten
+		environment.food_set.add(food.Food(environment.width/2 + c.radius + 0.000001, environment.height/2))
 		environment.tick()
 		self.assertEqual(len(environment.food_set), food_count + 1)
 		
