@@ -45,8 +45,9 @@ class Environment(singleton.Singleton):
 			cell.distance_to_closest_food = closest_dist
 							
 	def tick(self):
-		if self.turn % 20 == 0:
-			self.update_closest_food()
+		self.update_closest_food()
+#                if self.turn % 20 == 0:
+#			self.update_closest_food()
 		for cell in self.cell_list:
 			cell.one_tick()
 		self.turn += 1
@@ -61,10 +62,10 @@ class Environment(singleton.Singleton):
 # print_table()
 #	output a table of each cell state to a text file
 
-	def print_table(self,filename):
-		"""Prints a table to a textfile with the provided name."""
+	def print_table(self,filename,comment=""):
+		"""Prints a table to a textfile with the provided name, with the provided comment above it."""
 		table_file = open(filename,"a")
-		table_file.write("\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
+		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
 		counter = 0
 		for cell in self.cell_list:
 			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.x,4))+"\t"+str(round(cell.y,4))+\
