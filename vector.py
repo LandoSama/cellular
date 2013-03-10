@@ -7,6 +7,12 @@ class Vector(object):
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
+	def __iadd__(self, other):
+		"""Increase vector."""
+		e = environment.Environment()
+		self.x = (self.x + other.x) % e.width
+		self.y = (self.y + other.y) % e.width
+		return self
 	def __add__(self, other):
 		"""Sum and mod vectors."""
 		e = environment.Environment()

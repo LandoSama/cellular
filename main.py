@@ -17,6 +17,7 @@ def main():
 		t2 = time()
 		print 'food: ',len(World.food_set),'\t\tTick: ',i, 1/(t2-t1)
 		World.tick()
+		World.print_table("Main_Test.txt","Tick: "+str(i))	
 		t1 = t2
 
 if __name__ == 'main': main()
