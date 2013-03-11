@@ -14,4 +14,3 @@ def check_cell(n,filename):
             fN.write(str(counter)+line[ln:]+"\n")
             counter += 1
     fN.close()
-    

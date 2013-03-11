@@ -103,7 +103,7 @@ class Cell:
 		"""Slows a cell by directly reducing its velocity until it gets close to 0."""
 		# Get total, x, and y distances to destination
 		total_distance = util.distance(self.x,self.destination[0],self.y,self.destination[1])
-			xdist = abs(self.x - self.destination[0])
+		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 		# Calculations how much of each velocity will be reduced
                 x_reduc = self.max_acceleration*xdist/total_distance
