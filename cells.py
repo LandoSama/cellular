@@ -1,9 +1,5 @@
-import math, unittest
-import random
-
-def distance(x1,x2,y1,y2):
-	"""Euclidian Distance Formula."""
-	return	math.sqrt((x2-x1)**2 + (y2-y1)**2)
+import unittest, util, environment as env
+import random, math
 
 class Cell:
 	def __init__(self,x,y):
@@ -17,22 +13,13 @@ class Cell:
 		self.task = None
 		#lets say that a destination is a tuple of the form (x,y) where x and y are real numbers
 		self.destination = None
+		self.destination_type = None
 		self.radius = 1
 		self.energy = 0
-		
-# should return true if food is consumed. 
-#	functionality tested from environment
-#
-	def try_consume_food(self, food):
-		x_diff = food.x - self.x
-		y_diff = food.y - self.y
-		if math.sqrt(x_diff*x_diff + y_diff*y_diff) < self.radius:
-			#print "Food coord: (", food.x, ",", food.y, ")"
-			#print "Cell coord: (", self.x, ",", self.y, ")"
-			#print "Distance:", math.sqrt(x_diff*x_diff + y_diff*y_diff)
-			self.energy += food.energy
-			return True
-		return False
+
+		#closest piece of food
+		self.closest_food = None
+		self.distance_to_closest_food = None
 
 	def get_pos(self):
 		"""Returns the position of the cell in tuple form."""
@@ -52,12 +39,14 @@ class Cell:
 
 	def get_speed(self):
 		"""Returns the speed of the cell."""
-		return math.sqrt(abs(self.xvel) + abs(self.yvel))
+		return math.sqrt((self.xvel)**2 + (self.yvel)**2)
 
 	def update_coords(self):
 		"""Changes the cell's position based on its velocity, a.k.a. movement."""
 		self.x += self.xvel
 		self.y += self.yvel
+		self.x = self.x % env.Environment().width
+		self.y = self.y % env.Environment().height
 
 	def go_to(self,destination):
 		"""Tells the cell to move to the destination specified.
@@ -74,70 +63,67 @@ class Cell:
 
 	def random_walk(self):
 		"""The cell begins to move towards a random destination."""
-		self.destination = random.random(),random.random()
+		self.destination = random.uniform(0,env.Environment().width),random.uniform(0,env.Environment().height),
 		self.set_task('move')
+		
+	def set_food_as_destination(self):
+		pass
+
+	def speed_limit(self):
+                """Prevents the cells from going over the speed limit."""
+                if abs(self.xvel) > self.max_speed:
+                        if self.xvel > 0:       self.xvel = self.max_speed
+                        else:                   self.xvel = self.max_speed*(-1)
+                if abs(self.yvel) > self.max_speed:
+                        if self.yvel > 0:       self.yvel = self.max_speed
+                        else:                   self.yvel = self.max_speed*(-1)
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
-		# get total distance to dest
-		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
-		# get x distance to dest
+		# get total, x, and y distances to destination
+		total_distance = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
-		# get y distance to dest
 		ydist = abs(self.y - self.destination[1])
-
+                # If the cell is right of the destination, accelerate left
 		if self.x > self.destination[0]:
 			self.xvel -= self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) >= self.max_speed:
-				self.xvel = self.max_speed * (-1)
+		# If the cell is left of the destination, accelerate right
 		else:
 			self.xvel += self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) >= self.max_speed:
-				self.xvel = self.max_speed
 			
+		# If the cell is above the destination, accelerate downwards
 		if self.y > self.destination[1]:
-			self.y -= self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) >= self.max_speed:
-				self.yvel = self.max_speed * (-1)
+			self.yvel -= self.max_acceleration*ydist/total_distance
+		# If the cell is below the destination, accelerate upwards
 		else:
 			self.yvel += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) >= self.max_speed:
-				self.yvel = self.max_speed
-		
-		self.update_coords()
+		self.speed_limit()
 			
 	def slow_towards_destination(self):
-		"""Slows a cell at the maximum rate until it reaches its destination."""
-		# get total distance to dest
-		total_distance = distance(self.x,self.destination[0],self.y,self.destination[1])
+		"""Slows a cell by directly reducing its velocity until it gets close to 0."""
+		# Get total, x, and y distances to destination
+		total_distance = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
-		# once the calculated number of ticks is 0, the cell ought to be at its destination
-		ticks = int(self.get_speed()/self.max_acceleration)
-		if ticks <= 0:
-			self.xvel = 0.0
-			self.yvel = 0.0
-	
-		if self.x > self.destination[0]:
-			self.xvel += self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) > self.max_speed:
-				self.xvel = self.max_speed * (-1)
-		else:
-			self.xvel -= self.max_acceleration*xdist/total_distance
-			if abs(self.xvel) > self.max_speed:
-				self.xvel = self.max_speed
-
-		if self.y > self.destination[1]:
-			self.yvel += self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) > max_speed:
-				self.yvel = self.max_speed * (-1)
-
-		else:
-			self.yvel -= self.max_acceleration*ydist/total_distance
-			if abs(self.yvel) > self.max_speed:
-				self.yvel = self.max_speed
-
-		self.update_coords()
+		# Calculations how much of each velocity will be reduced
+                x_reduc = self.max_acceleration*xdist/total_distance
+		y_reduc = self.max_acceleration*ydist/total_distance
+		
+		# If the velocity is less than what it will be reduced by, just make it zero.
+		if abs(self.xvel) <= x_reduc:
+                        self.xvel = 0.0
+                # Otherwise: if velocity is positive, subtract. If negative, add.
+                elif self.xvel > 0:     self.xvel -= x_reduc
+                elif self.xvel < 0:     self.xvel += x_reduc
+                else:                   pass
+                
+                # Repeat for y velocity.
+                if abs(self.yvel) <= y_reduc:
+                        self.yvel = 0.0
+                elif self.yvel > 0:     self.yvel -= y_reduc
+                elif self.yvel < 0:     self.yvel += y_reduc
+                else:                   pass
+		self.speed_limit()
 		
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -150,18 +136,42 @@ class Cell:
 			dist += temp_speed
 		return dist
 
+	def food_nearby_question_mark(self):
+		pass
+		
+	def eat(self):
+		e = env.Environment()
+		for f in e.food_at(self.x, self.y, self.radius):
+			self.energy += f.energy
+			e.remove_food(f)
+			self.task = None
+                        self.destination = None
+                        self.closest_food = None
+                        self.distance_to_closest_food = None
+
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		if self.task == None:
-			# If the cell is doing nothing, reset to the default: Random Walk
-			self.random_walk()
+			# food nearby? then go to it.
+			if self.distance_to_closest_food < 20:
+				self.destination = (self.closest_food.x,self.closest_food.y)
+				self.destination_type = 'food'
+				self.task = 'move'
+			# If the cell is doing nothing and there isn't any close food: Random Walk
+			else:
+				self.random_walk()
+			
 		elif self.task == 'move':
 			if self.destination == None:
 				# If the cell wants to move but has no destination, it's not allowed to move. Sorry, cell.
 				self.task = None
 			else:
-				distance_to_destination = distance(self.x,self.destination[0],self.y,self.destination[1])			
+				distance_to_destination = util.distance(self.x,self.destination[0],self.y,self.destination[1])			
 				if distance_to_destination > self.distance_to_start_slowing_down():
+					# if cell.destination_type = food		
+						# if food no longer exsits, self.task = stop
+							# else accelerate towards desitnation
+
 					# Keep accelerating until told to do otherwise.
 					self.accel_towards_destination()
 				else:
@@ -176,6 +186,8 @@ class Cell:
 			else:
 				# If the cell wants to stop but hasn't yet, deaccelerate.
 				self.slow_towards_destination()
+		self.update_coords()
+		self.eat()
 
 class TestFunctions(unittest.TestCase):
 	"""Fingers Crossed."""
@@ -260,10 +272,10 @@ class TestFunctions(unittest.TestCase):
 
 	def test_distance_func(self):
 		"""Tests the accuracy distance function."""
-		self.assertEquals(5.0,distance(0,3,0,4))
-		self.assertEquals(5.0,distance(3,0,4,0))
-		self.assertEquals(5.0,distance(6,9,8,4))
-		self.assertEquals(5.0,distance(-3,-6,-4,-8))
+		self.assertEquals(5.0,util.distance(0,3,0,4))
+		self.assertEquals(5.0,util.distance(3,0,4,0))
+		self.assertEquals(5.0,util.distance(6,9,8,4))
+		self.assertEquals(5.0,util.distance(-3,-6,-4,-8))
 
 if __name__ == "__main__":
 	unittest.main()
