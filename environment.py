@@ -65,17 +65,17 @@ class Environment(singleton.Singleton):
 	def print_table(self,filename,comment=""):
 		"""Prints a table to a textfile with the provided name, with the provided comment above it."""
 		table_file = open(filename,"a")
-		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\ttask\tx_dest\ty_dest\tradius\tenergy\n")
+		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\tx_dest\ty_dest\tradius\tenergy\ttask\n")
 		counter = 0
 		for cell in self.cell_list:
 			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.x,4))+"\t"+str(round(cell.y,4))+\
-			"\t"+str(round(cell.xvel,4))+"\t"+str(round(cell.yvel,4))+"\t"+str(cell.task)+"\t")
+			"\t"+str(round(cell.xvel,4))+"\t"+str(round(cell.yvel,4))+"\t")
 			if type(cell.destination) == type(None):
-				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
+				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
 			elif type(cell.destination) == type((0,0)):
 				table_file.write(str(round(cell.destination[0],4))+"\t"+str(round(cell.destination[1],4))+\
-				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\n")
-			else: print type(cell.destination),cell.destination,"\n"
+				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
+			else: raise TypeError(str(type(cell.destination))+" "+str(cell.destination))
 			counter += 1
 		table_file.close()
 		
