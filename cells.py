@@ -37,26 +37,29 @@ class Cell:
 
 	def task_finding_food(self):
 		"""What the cell does should it be looking for food."""
-		# If you can see the food (vision range of 20) go for it.
-		if self.distance_to_closest_food < 20:
+		if self.distance_to_closest_food >= 20 or self.distance_to_closest_food == None:
+			# If you can't see food, accelerate in random directions.
+                        self.destination         = random.uniform(0,env.Environment().width) , random.uniform(0,env.Environment().height)
+                        self.destination_type    = "Exploration"
+                        self.accel_towards_destination()
+		else:
+			# Otherwise, the cell should try to get it.
 			self.destination	 = self.closest_food.x , self.closest_food.y
 			self.destination_type	 = "Food"
 			self.task		 = "GettingFood"
-		else:
-		# Otherwise, explore; i.e. accelerate in random directions.
-			self.destination	 = random.uniform(0,env.Environment().width) , random.uniform(0,env.Environment().height)
-			self.destination_type	 = "Exploration"
-			self.accel_towards_destination()
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
 		# If there exists some food item at the destination location,
-		if env.Environment().food_at(self.destination[0],self.destination[1],.00001) != None:
+		if len(env.Environment().food_at(self.destination[0],self.destination[1],.1)) != 0:
 			distance_to_destination = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 			if distance_to_destination > self.distance_to_start_slowing_down():
 				self.accel_towards_destination()
 			else:
 				self.slow_towards_destination()
+		else:
+			self.destination = self.destination_type = self.task = None
+			self.closest_food = self.distance_to_closest_food = None
 
 	def get_pos(self):
 		"""Returns the position of the cell in tuple form."""

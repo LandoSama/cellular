@@ -21,7 +21,6 @@ class Environment(singleton.Singleton):
 			self.cell_list.append(cells.Cell(random.randint(0, self.width), random.randint(0, self.height)))
 			
 	def update_closest_food(self):
-		print 'did shit'
 		for cell in self.cell_list:
 			closest = None
 			closest_dist = None
