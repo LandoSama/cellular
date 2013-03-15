@@ -114,7 +114,7 @@ class CreationTest(unittest.TestCase):
 		self.assertEqual(len(environment.food_set), food_count)
 
 # add another food just on the boundry of the radius and see that it is not eaten		
-		environment.food_set.add(food.Food(environment.width/2 + c.radius, environment.height/2))
+		environment.food_set.add(food.Food(environment.width/2 + c.radius + 0.000001, environment.height/2))
 		environment.tick()
 		self.assertEqual(len(environment.food_set), food_count + 1)
 		
