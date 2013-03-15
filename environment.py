@@ -2,11 +2,11 @@ import cells, food, random, unittest, util, singleton
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count):
-		"""Generate a 100x100 environment with specified amount of food and cells"""
+		"""Generate a 1x1 environment with specified amount of food and cells"""
 		#print "init_once:", id(self) #should print only once
 		self.cell_list = []
 		self.food_set = set()
-		self.width = self.height = 100.0
+		self.width = self.height = 1.0
 		self.add_food(food_count)
 		self.add_cells(cells_count)
 		self.turn = 0
@@ -14,11 +14,11 @@ class Environment(singleton.Singleton):
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
 		for i in range(food_count):
-			self.food_set.add(food.Food(random.randint(0, self.width), random.randint(0, self.height)))
+			self.food_set.add(food.Food(random.uniform(0, self.width), random.uniform(0, self.height)))
 
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
-			self.cell_list.append(cells.Cell(random.randint(0, self.width), random.randint(0, self.height)))
+			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 			
 	def update_closest_food(self):
 		for cell in self.cell_list:

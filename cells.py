@@ -4,8 +4,8 @@ import random, math
 class Cell:
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-		self.max_acceleration = 0.02
-		self.max_speed = 0.1
+		self.max_acceleration = 0.0002
+		self.max_speed = 0.001
 		self.x = float(x)
 		self.y = float(y)
 		self.xvel = 0.0
@@ -15,7 +15,7 @@ class Cell:
 		# Destinations are tuples of the form (x,y) where x and y are real numbers.
 		self.destination = None
 		self.destination_type = None
-		self.radius = 1
+		self.radius = .01
 		self.energy = 0
 
 		#closest piece of food
@@ -69,14 +69,6 @@ class Cell:
 		"""Returns the velocity of the cell in tuple form."""
 		return (self.xvel, self.yvel)
 
-	def get_task(self):
-		"""Returns the task of the cell."""
-		return self.task
-
-	def get_destination(self):
-		"""Returns the destination of the cell."""
-		return self.destination
-
 	def get_speed(self):
 		"""Returns the speed of the cell."""
 		return math.sqrt((self.xvel)**2 + (self.yvel)**2)
@@ -108,21 +100,37 @@ class Cell:
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 
-                # If the cell is right of the destination, accelerate left
+                # If the cell is right of the destination...
 		if self.x > self.destination[0]:
-			self.xvel -= self.max_acceleration*xdist/total_distance
+			# ...accelerate left if it's closer than half the environment's size
+			if xdist <= env.Environment().width / 2.0:
+				self.xvel -= self.max_acceleration*xdist/total_distance
+			# ...accelerate right if it's just faster to wrap around
+			else:
+				self.xvel += self.max_acceleration*xdist/total_distance
 
-		# If the cell is left of the destination, accelerate right
+		# If the cell is left of the destination...
 		else:
-			self.xvel += self.max_acceleration*xdist/total_distance
-			
-		# If the cell is above the destination, accelerate downwards
+			# ...accelerate right if it's closer than half the environment's size
+			if xdist <= env.Environment().width / 2.0:
+				self.xvel += self.max_acceleration*xdist/total_distance
+			# ...accelerate left if it's just faster to wrap around
+			else:
+				self.xvel -= self.max_acceleration*xdist/total_distance
+
+		# If the cell is above the destination...
 		if self.y > self.destination[1]:
-			self.yvel -= self.max_acceleration*ydist/total_distance
+			if ydist <= env.Environment().height / 2.0:
+				self.yvel -= self.max_acceleration*ydist/total_distance
+			else:
+				self.yvel += self.max_acceleration*ydist/total_distance
 
-		# If the cell is below the destination, accelerate upwards
+		# If the cell is below the destination...
 		else:
-			self.yvel += self.max_acceleration*ydist/total_distance
+			if ydist <= env.Environment().height / 2.0:
+                                self.yvel += self.max_acceleration*ydist/total_distance
+			else:
+				self.yvel -= self.max_acceleration*ydist/total_distance
 		self.speed_limit()
 			
 	def slow_towards_destination(self):

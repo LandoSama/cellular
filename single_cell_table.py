@@ -16,10 +16,8 @@ def check_cell(n,filename):
 	fN.close()
 
 def main():
-	again = True
-	while again:
-		inp = input("Which cell would you like to make a table of? ")
-        	filename = raw_input("And for which document? (Include .txt) ")
-        	check_cell(inp,filename)
-        	again = input("Type False to quit. ")
+	filename = raw_input("For which document (include .txt)? ")
+	while True:
+		cell = input("Which cell would you like to make a table of? ")
+        	check_cell(cell,filename)
 main()
