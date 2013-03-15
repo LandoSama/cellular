@@ -11,8 +11,8 @@ def check_cell(n,filename):
 	ln = len(str(n))+5
 	for line in f1:
 		if line.startswith("Cell_"+str(n)+"\t"):
-	        	fN.write(str(counter)+line[ln:]+"\n")
-	        	counter +=1
+			fN.write(str(counter)+line[ln:]+"\n")
+			counter +=1
 	fN.close()
 
 def main():

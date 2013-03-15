@@ -18,10 +18,6 @@ class Cell:
 		self.radius = .01
 		self.energy = 0
 
-		#closest piece of food
-		self.closest_food = None
-		self.distance_to_closest_food = None
-
 		# Task jumptable!
 		self.TaskTable			= {}
 		self.TaskTable[None]		= self.task_none
@@ -36,17 +32,34 @@ class Cell:
 		self.task = "FindingFood"
 
 	def task_finding_food(self):
+		#closest piece of food
+		SIGHT_RANGE = 20
+		
+		#closest_food = None
+		#distance_to_closest_food = SIGHT_RANGE + 1
+		#for food in env.Environment().food_at(self.x, self.y, SIGHT_RANGE):
+			#dist = util.distance(self.x, food.x, self.y, food.y)
+			#if dist < distance_to_closest_food:
+				#closest_food = food
+				#distance_to_closest_food = dist
+
+		close_food = env.Environment().food_at(self.x, self.y, SIGHT_RANGE)
+		closest_food = len(close_food) and min(close_food,
+												 key = lambda food: util.distance(self.x, food.x, self.y, food.y)
+												) or None
+		#assert(closest_food_b is closest_food)
+
 		"""What the cell does should it be looking for food."""
-		if self.distance_to_closest_food >= 20 or self.distance_to_closest_food == None:
-			# If you can't see food, accelerate in random directions.
-                        self.destination         = random.uniform(0,env.Environment().width) , random.uniform(0,env.Environment().height)
-                        self.destination_type    = "Exploration"
-                        self.accel_towards_destination()
+		if closest_food is None:
+			# If you can't see food, accelerate in a random direction.
+			self.destination         = random.uniform(0,env.Environment().width), random.uniform(0,env.Environment().height)
+			self.destination_type    = "Exploration"
+			self.accel_towards_destination()
 		else:
 			# Otherwise, the cell should try to get it.
-			self.destination	 = self.closest_food.x , self.closest_food.y
-			self.destination_type	 = "Food"
-			self.task		 = "GettingFood"
+			self.destination	  = closest_food.x, closest_food.y
+			self.destination_type = "Food"
+			self.task			  = "GettingFood"
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""

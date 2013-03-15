@@ -19,34 +19,8 @@ class Environment(singleton.Singleton):
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
-			
-	def update_closest_food(self):
-		for cell in self.cell_list:
-			closest = None
-			closest_dist = None
-			tup = cell.get_pos()
-			x1 = tup[0]
-			y1 = tup[1]
-			for food in self.food_set:
-				x2 = food.x
-				y2 = food.y
-				dist = util.distance(x1,x2,y1,y2)
-				if closest == None:
-					closest = food
-					closest_dist = dist
-				else:
-					if dist < closest_dist:
-						closest = food
-						closest_dist = dist
-					else:
-						pass
-			cell.closest_food = closest
-			cell.distance_to_closest_food = closest_dist
 							
 	def tick(self):
-		self.update_closest_food()
-#                if self.turn % 20 == 0:
-#			self.update_closest_food()
 		for cell in self.cell_list:
 			cell.one_tick()
 		self.turn += 1
