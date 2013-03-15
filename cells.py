@@ -34,20 +34,12 @@ class Cell:
 	def task_finding_food(self):
 		#closest piece of food
 		SIGHT_RANGE = 20
-		
-		#closest_food = None
-		#distance_to_closest_food = SIGHT_RANGE + 1
-		#for food in env.Environment().food_at(self.x, self.y, SIGHT_RANGE):
-			#dist = util.distance(self.x, food.x, self.y, food.y)
-			#if dist < distance_to_closest_food:
-				#closest_food = food
-				#distance_to_closest_food = dist
 
 		close_food = env.Environment().food_at(self.x, self.y, SIGHT_RANGE)
-		closest_food = len(close_food) and min(close_food,
-												 key = lambda food: util.distance(self.x, food.x, self.y, food.y)
-												) or None
-		#assert(closest_food_b is closest_food)
+		#If there is any food within distance SIGHT_RANGE, get the closest one.
+		if len(close_food) > 0:
+			closest_food = min(close_food, key = lambda food: util.distance(self.x, food.x, self.y, food.y))
+		else: closest_food = None
 
 		"""What the cell does should it be looking for food."""
 		if closest_food is None:
