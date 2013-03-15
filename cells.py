@@ -4,8 +4,8 @@ import random, math
 class Cell:
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-		self.max_acceleration = 0.02
-		self.max_speed = 0.1
+		self.max_acceleration = 0.0002
+		self.max_speed = 0.001
 		self.x = float(x)
 		self.y = float(y)
 		self.xvel = 0.0
@@ -15,7 +15,7 @@ class Cell:
 		# Destinations are tuples of the form (x,y) where x and y are real numbers.
 		self.destination = None
 		self.destination_type = None
-		self.radius = 1
+		self.radius = .01
 		self.energy = 0
 
 		#closest piece of food
@@ -37,26 +37,29 @@ class Cell:
 
 	def task_finding_food(self):
 		"""What the cell does should it be looking for food."""
-		# If you can see the food (vision range of 20) go for it.
-		if self.distance_to_closest_food < 20:
+		if self.distance_to_closest_food >= 20 or self.distance_to_closest_food == None:
+			# If you can't see food, accelerate in random directions.
+                        self.destination         = random.uniform(0,env.Environment().width) , random.uniform(0,env.Environment().height)
+                        self.destination_type    = "Exploration"
+                        self.accel_towards_destination()
+		else:
+			# Otherwise, the cell should try to get it.
 			self.destination	 = self.closest_food.x , self.closest_food.y
 			self.destination_type	 = "Food"
 			self.task		 = "GettingFood"
-		else:
-		# Otherwise, explore; i.e. accelerate in random directions.
-			self.destination	 = random.uniform(0,env.Environment().width) , random.uniform(0,env.Environment().height)
-			self.destination_type	 = "Exploration"
-			self.accel_towards_destination()
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
 		# If there exists some food item at the destination location,
-		if env.Environment().food_at(self.destination[0],self.destination[1],.00001) != None:
+		if len(env.Environment().food_at(self.destination[0],self.destination[1],.1)) != 0:
 			distance_to_destination = util.distance(self.x,self.destination[0],self.y,self.destination[1])
 			if distance_to_destination > self.distance_to_start_slowing_down():
 				self.accel_towards_destination()
 			else:
 				self.slow_towards_destination()
+		else:
+			self.destination = self.destination_type = self.task = None
+			self.closest_food = self.distance_to_closest_food = None
 
 	def get_pos(self):
 		"""Returns the position of the cell in tuple form."""
@@ -65,14 +68,6 @@ class Cell:
 	def get_vel(self):
 		"""Returns the velocity of the cell in tuple form."""
 		return (self.xvel, self.yvel)
-
-	def get_task(self):
-		"""Returns the task of the cell."""
-		return self.task
-
-	def get_destination(self):
-		"""Returns the destination of the cell."""
-		return self.destination
 
 	def get_speed(self):
 		"""Returns the speed of the cell."""
@@ -105,21 +100,37 @@ class Cell:
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 
-                # If the cell is right of the destination, accelerate left
+                # If the cell is right of the destination...
 		if self.x > self.destination[0]:
-			self.xvel -= self.max_acceleration*xdist/total_distance
+			# ...accelerate left if it's closer than half the environment's size
+			if xdist <= env.Environment().width / 2.0:
+				self.xvel -= self.max_acceleration*xdist/total_distance
+			# ...accelerate right if it's just faster to wrap around
+			else:
+				self.xvel += self.max_acceleration*xdist/total_distance
 
-		# If the cell is left of the destination, accelerate right
+		# If the cell is left of the destination...
 		else:
-			self.xvel += self.max_acceleration*xdist/total_distance
-			
-		# If the cell is above the destination, accelerate downwards
+			# ...accelerate right if it's closer than half the environment's size
+			if xdist <= env.Environment().width / 2.0:
+				self.xvel += self.max_acceleration*xdist/total_distance
+			# ...accelerate left if it's just faster to wrap around
+			else:
+				self.xvel -= self.max_acceleration*xdist/total_distance
+
+		# If the cell is above the destination...
 		if self.y > self.destination[1]:
-			self.yvel -= self.max_acceleration*ydist/total_distance
+			if ydist <= env.Environment().height / 2.0:
+				self.yvel -= self.max_acceleration*ydist/total_distance
+			else:
+				self.yvel += self.max_acceleration*ydist/total_distance
 
-		# If the cell is below the destination, accelerate upwards
+		# If the cell is below the destination...
 		else:
-			self.yvel += self.max_acceleration*ydist/total_distance
+			if ydist <= env.Environment().height / 2.0:
+                                self.yvel += self.max_acceleration*ydist/total_distance
+			else:
+				self.yvel -= self.max_acceleration*ydist/total_distance
 		self.speed_limit()
 			
 	def slow_towards_destination(self):
