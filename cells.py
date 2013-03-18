@@ -183,12 +183,18 @@ class Cell:
                         self.destination		 = None
                         self.closest_food		 = None
                         self.distance_to_closest_food	 = None
+                        
+    def mitosis(self):
+		#if energy above a threshold like 5 or whatever
+			#talk to the environment
+			#make two cells at slightly different positions, where each of them has (2/5) energy of the parent
 
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
+		self.mitosis()
 
 class TestFunctions(unittest.TestCase):
 

@@ -21,7 +21,7 @@ def main():
 	World = environment.Environment(starting_food_count,starting_cell_count)
 	
 	for i in range(number_of_test_ticks):
-		print 'food: ',len(World.food_set),'\t\tTick: ',i
+		print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
 main()
