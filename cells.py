@@ -90,13 +90,13 @@ class Cell:
 		self.task = new_task
 
 	def speed_limit(self):
-                """Prevents the cells from going over the speed limit."""
-                if abs(self.xvel) > self.max_speed:
-                        if self.xvel > 0:       self.xvel = self.max_speed
-                        else:                   self.xvel = self.max_speed*(-1)
-                if abs(self.yvel) > self.max_speed:
-                        if self.yvel > 0:       self.yvel = self.max_speed
-                        else:                   self.yvel = self.max_speed*(-1)
+				"""Prevents the cells from going over the speed limit."""
+				if abs(self.xvel) > self.max_speed:
+						if self.xvel > 0:       self.xvel = self.max_speed
+						else:                   self.xvel = self.max_speed*(-1)
+				if abs(self.yvel) > self.max_speed:
+						if self.yvel > 0:       self.yvel = self.max_speed
+						else:                   self.yvel = self.max_speed*(-1)
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
@@ -105,7 +105,7 @@ class Cell:
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 
-                # If the cell is right of the destination...
+				# If the cell is right of the destination...
 		if self.x > self.destination[0]:
 			# ...accelerate left if it's closer than half the environment's size
 			if xdist <= env.Environment().width / 2.0:
@@ -133,11 +133,11 @@ class Cell:
 		# If the cell is below the destination...
 		else:
 			if ydist <= env.Environment().height / 2.0:
-                                self.yvel += self.max_acceleration*ydist/total_distance
+								self.yvel += self.max_acceleration*ydist/total_distance
 			else:
 				self.yvel -= self.max_acceleration*ydist/total_distance
 		self.speed_limit()
-			
+
 	def slow_towards_destination(self):
 		"""Slows a cell by directly reducing its velocity until it gets close to 0."""
 		# Get total, x, and y distances to destination
@@ -145,25 +145,25 @@ class Cell:
 		xdist = abs(self.x - self.destination[0])
 		ydist = abs(self.y - self.destination[1])
 		# Calculations how much of each velocity will be reduced
-                x_reduc = self.max_acceleration*xdist/total_distance
+		x_reduc = self.max_acceleration*xdist/total_distance
 		y_reduc = self.max_acceleration*ydist/total_distance
-		
+
 		# If the velocity is less than what it will be reduced by, just make it zero.
 		if abs(self.xvel) <= x_reduc:
-                        self.xvel = 0.0
-                # Otherwise: if velocity is positive, subtract. If negative, add.
-                elif self.xvel > 0:     self.xvel -= x_reduc
-                elif self.xvel < 0:     self.xvel += x_reduc
-                else:                   pass
-                
-                # Repeat for y velocity.
-                if abs(self.yvel) <= y_reduc:
-                        self.yvel = 0.0
-                elif self.yvel > 0:     self.yvel -= y_reduc
-                elif self.yvel < 0:     self.yvel += y_reduc
-                else:                   pass
+				self.xvel = 0.0
+				# Otherwise: if velocity is positive, subtract. If negative, add.
+		elif self.xvel > 0:     self.xvel -= x_reduc
+		elif self.xvel < 0:     self.xvel += x_reduc
+		else:                   pass
+
+				# Repeat for y velocity.
+		if abs(self.yvel) <= y_reduc:
+			self.yvel = 0.0
+		elif self.yvel > 0:     self.yvel -= y_reduc
+		elif self.yvel < 0:     self.yvel += y_reduc
+		else:                   pass
 		self.speed_limit()
-		
+
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
@@ -174,17 +174,17 @@ class Cell:
 			temp_speed -= self.max_acceleration
 			dist += temp_speed
 		return dist
-		
+
 	def eat(self):
 		for f in env.Environment().food_at(self.x, self.y, self.radius):
 			self.energy += f.energy
 			env.Environment().remove_food(f)
 			self.task			 = None
-                        self.destination		 = None
-                        self.closest_food		 = None
-                        self.distance_to_closest_food	 = None
-                        
-    def mitosis(self):
+			self.destination		 = None
+			self.closest_food		 = None
+			self.distance_to_closest_food	 = None
+
+	def mitosis(self):
 		#if energy above a threshold like 5 or whatever
 			#talk to the environment
 			#make two cells at slightly different positions, where each of them has (2/5) energy of the parent
