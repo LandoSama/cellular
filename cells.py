@@ -188,6 +188,7 @@ class Cell:
 		#if energy above a threshold like 5 or whatever
 			#talk to the environment
 			#make two cells at slightly different positions, where each of them has (2/5) energy of the parent
+		pass
 
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
