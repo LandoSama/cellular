@@ -150,13 +150,13 @@ class Cell:
 
 		# If the velocity is less than what it will be reduced by, just make it zero.
 		if abs(self.xvel) <= x_reduc:
-				self.xvel = 0.0
-				# Otherwise: if velocity is positive, subtract. If negative, add.
+			self.xvel = 0.0
+		# Otherwise: if velocity is positive, subtract. If negative, add.
 		elif self.xvel > 0:     self.xvel -= x_reduc
 		elif self.xvel < 0:     self.xvel += x_reduc
 		else:                   pass
 
-				# Repeat for y velocity.
+		# Repeat for y velocity.
 		if abs(self.yvel) <= y_reduc:
 			self.yvel = 0.0
 		elif self.yvel > 0:     self.yvel -= y_reduc
