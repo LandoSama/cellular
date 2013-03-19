@@ -7,7 +7,7 @@ class Cell:
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		self.max_acceleration = 0.0002
 		self.max_speed = 0.001
-		self.pos = Vector(float(x), float(y))
+		self.pos = Vector(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.task = None
 		self.destination = None
