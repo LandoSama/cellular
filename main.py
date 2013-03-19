@@ -4,6 +4,7 @@ import test
 import cells
 import copy
 import sys
+import display
 
 def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
@@ -20,8 +21,10 @@ def main():
 		number_of_test_ticks = input('Enter number of test ticks: ')
 	World = environment.Environment(starting_food_count,starting_cell_count)
 	
+	display.display(World)
 	for i in range(number_of_test_ticks):
 		print 'food: ',len(World.food_set),'\t\tTick: ',i
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
+	
 main()
