@@ -15,6 +15,9 @@ class Environment(singleton.Singleton):
 		"""Add food_count number of foods at random locations"""
 		for i in range(food_count):
 			self.food_set.add(food.Food(random.uniform(0, self.width), random.uniform(0, self.height)))
+	def add_food_at_location(self, x, y):
+		"""Add a food item at location"""
+		self.food_set.add(food.Food(x, y))
 
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
@@ -33,10 +36,14 @@ class Environment(singleton.Singleton):
 
 	def remove_food(self, food):
 		self.food_set.remove(food)
-		
+	
+	def kill_cell(self,cell):
+		pos = cell.get_pos()
+		self.cell_list.remove(cell)
+		self.add_food_at_location(*pos)
+
 	def remove_cell(self,cell):
 		self.cell_list.remove(cell)
-	
 
 # print_table()
 #	output a table of each cell state to a text file
