@@ -16,7 +16,7 @@ class Cell:
 		self.destination = None
 		self.destination_type = None
 		self.radius = .01
-		self.energy = 0
+		self.energy = 1
 
 		# Task jumptable!
 		self.TaskTable			= {}
@@ -109,33 +109,41 @@ class Cell:
 		if self.x > self.destination[0]:
 			# ...accelerate left if it's closer than half the environment's size
 			if xdist <= env.Environment().width / 2.0:
+				self.energy -= self.max_acceleration*xdist/total_distance
 				self.xvel -= self.max_acceleration*xdist/total_distance
 			# ...accelerate right if it's just faster to wrap around
 			else:
 				self.xvel += self.max_acceleration*xdist/total_distance
+				self.energy -= self.max_acceleration*xdist/total_distance
 
 		# If the cell is left of the destination...
 		else:
 			# ...accelerate right if it's closer than half the environment's size
 			if xdist <= env.Environment().width / 2.0:
 				self.xvel += self.max_acceleration*xdist/total_distance
+				self.energy -= self.max_acceleration*xdist/total_distance
 			# ...accelerate left if it's just faster to wrap around
 			else:
 				self.xvel -= self.max_acceleration*xdist/total_distance
+				self.energy -= self.max_acceleration*xdist/total_distance
 
 		# If the cell is above the destination...
 		if self.y > self.destination[1]:
 			if ydist <= env.Environment().height / 2.0:
 				self.yvel -= self.max_acceleration*ydist/total_distance
+				self.energy -= self.max_acceleration*ydist/total_distance
 			else:
 				self.yvel += self.max_acceleration*ydist/total_distance
+				self.energy -= self.max_acceleration*ydist/total_distance
 
 		# If the cell is below the destination...
 		else:
 			if ydist <= env.Environment().height / 2.0:
-								self.yvel += self.max_acceleration*ydist/total_distance
+				self.yvel += self.max_acceleration*ydist/total_distance
+				self.energy -= self.max_acceleration*ydist/total_distance
 			else:
 				self.yvel -= self.max_acceleration*ydist/total_distance
+				self.energy -= self.max_acceleration*ydist/total_distance
 		self.speed_limit()
 
 	def slow_towards_destination(self):
@@ -184,18 +192,29 @@ class Cell:
 			self.closest_food		 = None
 			self.distance_to_closest_food	 = None
 
-	def mitosis(self):
-		#if energy above a threshold like 5 or whatever
-			#talk to the environment
-			#make two cells at slightly different positions, where each of them has (2/5) energy of the parent
-		pass
+	def life_and_death(self):
+		if self.energy >= 5: #hardcoded threshold
+			#make babby 1
+			x1 = random.uniform(self.x-0.01,self.x+0.01)
+			y1 = random.uniform(self.y-0.01,self.y+0.01)
+			env.Environment().add_cells_at_location(x1,y1)
+			
+			#make babby 2
+			x2 = random.uniform(self.x-0.01,self.x+0.01)
+			y2 = random.uniform(self.y-0.01,self.y+0.01)
+			env.Environment().add_cells_at_location(x2,y2)
+						
+			#make two cells at slightly different positions
+			env.Environment().remove_cell(self)
+		elif self.energy <= 0:
+			env.Environment().remove_cell(self)
 
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
-		self.mitosis()
+		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
 

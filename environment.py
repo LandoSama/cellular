@@ -19,6 +19,9 @@ class Environment(singleton.Singleton):
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
+			
+	def add_cells_at_location(self,x,y):
+		self.cell_list.append(cells.Cell(x, y))
 							
 	def tick(self):
 		for cell in self.cell_list:
@@ -30,6 +33,9 @@ class Environment(singleton.Singleton):
 
 	def remove_food(self, food):
 		self.food_set.remove(food)
+		
+	def remove_cell(self,cell):
+		self.cell_list.remove(cell)
 	
 
 # print_table()
