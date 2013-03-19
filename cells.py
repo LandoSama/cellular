@@ -1,14 +1,14 @@
 import unittest, util, environment
 import random, math
-import vector
+from vector import Vector
 
 class Cell:
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		self.max_acceleration = 0.0002
 		self.max_speed = 0.001
-		self.pos = vector.Vector(float(x), float(y))
-		self.vel = vector.Vector(0.0, 0.0)
+		self.pos = Vector(float(x), float(y))
+		self.vel = Vector(0.0, 0.0)
 		self.task = None
 		self.destination = None
 		self.destination_type = None
@@ -41,14 +41,15 @@ class Cell:
 		"""What the cell does should it be looking for food."""
 		if closest_food is None:
 			# If you can't see food, accelerate in a random direction.
-			self.destination       = vector.Vector(random.uniform(0,environment.Environment().width), random.uniform(0,environment.Environment().height))
+			self.destination       = Vector(random.uniform(0,environment.Environment().width),
+							 random.uniform(0,environment.Environment().height))
 			self.destination_type  = "Exploration"
 			self.accel_towards_destination()
 		else:
 			# Otherwise, the cell should try to get it.
-			self.destination      = closest_food.pos
+			self.destination = closest_food.pos
 			self.destination_type = "Food"
-			self.task			  = "GettingFood"
+			self.task = "GettingFood"
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
@@ -78,11 +79,11 @@ class Cell:
 	def speed_limit(self):
 		"""Prevents the cells from going over the speed limit."""
 		if abs(self.vel.x) > self.max_speed:
-			if self.vel.x > 0: self.vel.x = self.max_speed
-			else:			   self.vel.x = self.max_speed*(-1)
+			if self.vel.x > 0: 	self.vel.x = self.max_speed
+			else: 			self.vel.x = self.max_speed*(-1)
 		if abs(self.vel.y) > self.max_speed:
-			if self.vel.y > 0: self.vel.y = self.max_speed
-			else:			   self.vel.y = self.max_speed*(-1)
+			if self.vel.y > 0: 	self.vel.y = self.max_speed
+			else: 			self.vel.y = self.max_speed*(-1)
 
 	def accel_towards_destination(self):
 		"""Accelerates the cell towards its destination."""
