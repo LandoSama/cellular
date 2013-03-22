@@ -13,6 +13,7 @@ class Cell:
 
 		# Required for motion.
 		self.mass	 = 0.01
+		self.K		 = 1			# K is a resistance constant.
 		self.walk_force	 = 0.001
 		self.derp_force	 = Vector(0.0, 0.0)
 
@@ -64,10 +65,10 @@ class Cell:
 		# If there exists some food item at the destination location,
 		if len(environment.Environment().food_at(self.destination,.1)) != 0:
 			distance_to_destination = util.distance(self.pos.x,self.destination.x,self.pos.y,self.destination.y)
-#			if distance_to_destination > self.distance_to_start_slowing_down():
-			self.exert_force()
-#			else:
-#				self.derp_force = 0
+			if distance_to_destination > self.distance_to_start_slowing_down():
+				self.exert_force()
+			else:
+				self.derp_force = Vector(0.,0.)
 		else:
 			self.destination = self.destination_type = self.task = None
 			self.closest_food = self.distance_to_closest_food = None
@@ -78,29 +79,22 @@ class Cell:
 
 	def update_coords(self):
 		"""Updates the cell's position, velocity and acceleration in that order."""
-		# K is the "resistance" constant.
-		K = 1
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.derp_force - self.vel*K/self.mass
+		self.acl = self.derp_force - self.vel*self.K/self.mass
 
 	def exert_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 
-
-#	Not yet sure how to tell cells to begin slowing down, now that they have a new algorithm for doing so.
-#	
-#	def distance_to_start_slowing_down(self):
-#		"""Calculates the distance from the destination that, once past,
-#		the cell ought to begin slowing down to reach its destination."""
-#		ticks		 = int(self.get_speed()/self.max_acceleration)
-#		dist		 = self.get_speed()
-#		temp_speed	 = self.get_speed()
-#		for i in xrange(ticks):
-#			temp_speed -= self.max_acceleration
-#			dist += temp_speed
-#		return dist
+	def distance_to_start_slowing_down(self):
+		"""Calculates the distance from the destination that, once past,
+		the cell ought to begin slowing down to reach its destination."""
+		dist = temp_speed = self.get_speed()
+		while temp_speed > 0:
+			temp_speed -= self.walk_force/self.K
+			dist += temp_speed
+		return dist
 		
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
