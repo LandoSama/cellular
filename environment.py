@@ -37,7 +37,7 @@ class Environment(singleton.Singleton):
 		counter = 0
 		for cell in self.cell_list:
 			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.pos.x,4))+"\t"+str(round(cell.pos.y,4))+\
-			"\t"+str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t"+str(cell.task)+"\t")
+			"\t"+str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t")
 			if type(cell.destination) == type(None):
 				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
 			elif type(cell.destination) == vector.Vector:
