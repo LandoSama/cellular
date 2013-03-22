@@ -27,6 +27,16 @@ class Vector(object):
 		xdiff = ((self.x - other.x + halfwidth) % e.width) - halfwidth
 		ydiff = ((self.y - other.y + halfheight) % e.width) - halfheight
 		return Vector(xdiff, ydiff)
+	def __mul__(self, other):
+		if type(other) == type(self):
+			return Vector(self.x*other.x, self.y*other.y)
+		elif type(other) == int or type(other) == float:
+			return Vector(self.x*other, self.y*other)
+	def __div__(self, other):
+		if type(other) == type(self):
+			return Vector(self.x/other.x, self.y/other.y)
+		elif type(other) == int or type(other) == float:
+			return Vector(self.x/other, self.y/other)
 	def __neg__(self):
 		return Vector(-self.x, -self.y)
 	def __abs__(self):
