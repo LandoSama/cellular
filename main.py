@@ -6,6 +6,8 @@ import copy
 import sys
 import display
 
+
+
 def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
 		starting_food_count = 100
@@ -21,10 +23,17 @@ def main():
 		number_of_test_ticks = input('Enter number of test ticks: ')
 	World = environment.Environment(starting_food_count,starting_cell_count)
 	
-	display.display(World)
+	# dis is a thread
+	dis = display.display(World)
+
 	for i in range(number_of_test_ticks):
+		# if the user exited pygame, close the rest of the program
+		if dis.isAlive() ==False:
+			sys.exit()
 		print 'food: ',len(World.food_set),'\t\tTick: ',i
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
-	
+
+	# if the main loop is over, close the graphics thread
+	dis._Thread__stop()
 main()
