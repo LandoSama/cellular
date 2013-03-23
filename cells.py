@@ -1,11 +1,11 @@
 import unittest, util, environment
 import random, math
-from vector import Vector
+from vector import Vector, Point
 
 class Cell:
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-		self.pos = Vector(float(x), float(y))	# Woo vectors!
+		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
 		self.radius = 0.01
@@ -94,6 +94,7 @@ class Cell:
 		while temp_speed > 0:
 			temp_speed -= self.walk_force/self.K
 			dist += temp_speed
+		print "distance_to_start_slowing_down calculated for " + str(id(self))
 		return dist
 		
 	def eat(self):

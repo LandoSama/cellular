@@ -10,7 +10,7 @@ class Vector(object):
 	def __iadd__(self, other):
 		"""Increase vector."""
 		e = environment.Environment()
-		self.x = (self.x + other.x) % e.width
+		self.x = self.x + other.x
 		self.y = (self.y + other.y) % e.width
 		return self
 	def __add__(self, other):
@@ -20,13 +20,8 @@ class Vector(object):
 		ydiff = (self.y + other.y) % e.width
 		return Vector(xdiff, ydiff)
 	def __sub__(self, other):
-		"""Return shortest difference vector pointing from other to self."""
-		e = environment.Environment()
-		halfwidth = e.width/2
-		halfheight = e.width/2
-		xdiff = ((self.x - other.x + halfwidth) % e.width) - halfwidth
-		ydiff = ((self.y - other.y + halfheight) % e.width) - halfheight
-		return Vector(xdiff, ydiff)
+		"""Return simple difference of vectors."""
+		return Vector(self.x - other.x, self.y - other.y)
 	def __mul__(self, other):
 		if type(other) == type(self):
 			return Vector(self.x*other.x, self.y*other.y)
@@ -44,14 +39,41 @@ class Vector(object):
 		return (self.x**2 + self.y**2)**0.5
 	def __repr__(self):
 		return '(' + str(self.x) + ',' + str(self.y) + ')'
+
+class Point(Vector):
+	#__slots__ = ('x', 'y')
+	def fit_to_torus(self):
+		"""Check vector."""
+		e = environment.Environment()
+		self.x %= e.width
+		self.y %= e.width
+	def __init__(self, x, y):
+		super(Point, self).__init__(x, y)
+	def __iadd__(self, other):
+		super(Point, self).__iadd__(other)
+		self.fit_to_torus()
+		return self
+	def __add__(self, other):
+		result = super(Point, self).__add__(other)
+		result.fit_to_torus()
+		return result
+	def __sub__(self, other):
+		"""Return shortest difference vector pointing from other to self."""
+		e = environment.Environment()
+		halfwidth = e.width/2
+		halfheight = e.width/2
+		xdiff = ((self.x - other.x + halfwidth) % e.width) - halfwidth
+		ydiff = ((self.y - other.y + halfheight) % e.width) - halfheight
+		return Vector(xdiff, ydiff)
 	def distance_to(self, other):
+		#Has no meaning for vectors
 		e = environment.Environment()
 		xdiff = abs(self.x - other.x)
 		ydiff = abs(self.y - other.y)
 		return sqrt(min(xdiff, e.width  - xdiff)**2 + \
 					min(ydiff, e.height - ydiff)**2)
 		#return abs(self - other)
-
+	
 
 class VectorAroundZero(object):
 	"""Vector in toroidal space (x,y) with -0.5 <= x,y <= 0.5"""

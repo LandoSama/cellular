@@ -40,7 +40,7 @@ class Environment(singleton.Singleton):
 			"\t"+str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t")
 			if type(cell.destination) == type(None):
 				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
-			elif type(cell.destination) == vector.Vector:
+			elif type(cell.destination) == vector.Point:
 				table_file.write(str(round(cell.destination.x,4))+"\t"+str(round(cell.destination.y,4))+\
 				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
 			else: raise TypeError(str(type(cell.destination))+" "+str(cell.destination))
