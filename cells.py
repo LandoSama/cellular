@@ -12,8 +12,8 @@ class Cell:
 		self.energy = 0
 
 		# Required for motion.
-		self.mass	 = 0.01
-		self.K		 = 1			# K is a resistance constant.
+		self.mass	 = 1
+		self.K		 = .1			# K is a resistance constant.
 		self.walk_force	 = 0.001
 		self.derp_force	 = Vector(0.0, 0.0)
 
@@ -50,8 +50,8 @@ class Cell:
 		"""What the cell does should it be looking for food."""
 		if closest_food is None:
 			# If you can't see food, accelerate in a random direction.
-			self.destination       = Vector(random.uniform(0,environment.Environment().width),
-							 random.uniform(0,environment.Environment().height))
+			self.destination = Point(random.uniform(0,environment.Environment().width),
+									 random.uniform(0,environment.Environment().height))
 			self.destination_type  = "Exploration"
 			self.exert_force()
 		else:
@@ -82,21 +82,52 @@ class Cell:
 		self.pos += self.vel
 		self.vel += self.acl
 		self.acl = self.derp_force - self.vel*self.K/self.mass
+		#print self.vel
+		#print self.acl
+		#print '---'
 
 	def exert_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+	
+	"""
+	Justification for change to return self.get_speed() * 999/2:
+		dist = temp_speed + .999*temp_speed + ...
+			 = sum(temp_speed*i)
+			 = temp_speed * sum i=.0 to .999(i) / 1000
+			 = temp_speed * sum i=0 to 999(i/1000)
+			 = temp_speed * sum i=0 to 999(i) / 1000
+			 = temp_speed * (999(1000)/2) / 1000
+			 = temp_speed * 999/2
+	Then that was abandoned, and changed to changed to return get_speed()/self.K:
+		#dist = temp_speed + temp_speed(1-self.K) + temp_speed*(1-self.K)^2 ... + temp_speed
+		sum[i=0 to infinity](temp_speed*(1-self.K)^i)
+		temp_speed*sum((1-self.k)^i)
+		temp_speed*1
+				   ------------
+				   1-(1-self.K)
+		temp_speed
+		----------
+		self.K
+	"""	
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		dist = temp_speed = self.get_speed()
-		while temp_speed > 0:
-			temp_speed -= self.walk_force/self.K
-			dist += temp_speed
-		print "distance_to_start_slowing_down calculated for " + str(id(self))
-		return dist
+		return self.get_speed()/self.K #this is faster and should be equivalent to the below loop
 		
+		#everything below doesn't run but i left it for documentation
+		#return self.get_speed() * 999/2
+		#dist = temp_speed = self.get_speed()
+		dist = 0
+		temp_speed = self.get_speed()
+		while temp_speed > 0:
+			#temp_speed -= self.walk_force/self.K
+			temp_speed -= temp_speed*self.K
+			dist += temp_speed
+		#print "distance_to_start_slowing_down calculated for " + str(id(self))
+		return dist
+
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
 			self.energy += f.energy

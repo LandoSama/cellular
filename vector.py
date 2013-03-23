@@ -9,16 +9,12 @@ class Vector(object):
 		self.y = y
 	def __iadd__(self, other):
 		"""Increase vector."""
-		e = environment.Environment()
 		self.x = self.x + other.x
-		self.y = (self.y + other.y) % e.width
+		self.y = self.y + other.y
 		return self
 	def __add__(self, other):
-		"""Sum and mod vectors."""
-		e = environment.Environment()
-		xdiff = (self.x + other.x) % e.width
-		ydiff = (self.y + other.y) % e.width
-		return Vector(xdiff, ydiff)
+		"""Sum of vectors."""
+		return Vector(self.x + other.x, self.y + other.y)
 	def __sub__(self, other):
 		"""Return simple difference of vectors."""
 		return Vector(self.x - other.x, self.y - other.y)
