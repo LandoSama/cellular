@@ -22,7 +22,7 @@ class Cell:
 		self.destination	 = None
 		self.destination_type	 = None
 		self.radius		 = .01
-		self.energy		 = 0
+		self.energy		 = 1.0
 
 		# Task jumptable!
 		self.TaskTable			= {}
@@ -67,8 +67,6 @@ class Cell:
 			distance_to_destination = util.distance(self.pos.x,self.destination.x,self.pos.y,self.destination.y)
 			if distance_to_destination > self.distance_to_start_slowing_down():
 				self.exert_force()
-			else:
-				self.derp_force = Vector(0.,0.)
 		else:
 			self.destination = self.destination_type = self.task = None
 			self.closest_food = self.distance_to_closest_food = None
@@ -82,13 +80,12 @@ class Cell:
 		self.pos += self.vel
 		self.vel += self.acl
 		self.acl = self.derp_force - self.vel*self.K/self.mass
-		#print self.vel
-		#print self.acl
-		#print '---'
+		self.derp_force = Vector(0.0,0.0)
 
 	def exert_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+		self.energy -= self.walk_force
 	
 	"""
 	Justification for change to return self.get_speed() * 999/2:
