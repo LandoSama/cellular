@@ -15,10 +15,8 @@ blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
 mousex, mousey = 0,0
 
-def convert_to_display_loc((x,y)):
-    x = int(round((x*display_width)))
-    y = int(round((y*display_height)))
-    return (x,y)
+def convert_to_display_loc(pos):
+    return int(round((pos[0]*display_width))), int(round((pos[1]*display_height)))
 
 # main display loop
 class Display(Thread):
@@ -30,11 +28,11 @@ class Display(Thread):
             windowSurfaceObj.fill(whiteColor)
             for cell in self.environment.cell_list:
                 # is the 20 width and the height?
-                pygame.draw.circle(windowSurfaceObj, redColor, convert_to_display_loc((cell.x, cell.y)), 20, 0)
+                pygame.draw.circle(windowSurfaceObj, redColor, convert_to_display_loc((cell.pos.x, cell.pos.y)), 20, 0)
             # environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
                 food_set = self.environment.food_set.copy()
             for food in food_set:
-                pygame.draw.circle(windowSurfaceObj, greenColor, convert_to_display_loc((food.x, food.y)), 10, 10)
+                pygame.draw.circle(windowSurfaceObj, greenColor, convert_to_display_loc((food.pos.x, food.pos.y)), 10, 10)
         
             for event in pygame.event.get():
                 if event.type ==QUIT:

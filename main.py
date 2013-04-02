@@ -36,4 +36,5 @@ def main():
 
 	# if the main loop is over, close the graphics thread
 	dis._Thread__stop()
+		
 main()
