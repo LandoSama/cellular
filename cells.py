@@ -12,10 +12,10 @@ class Cell:
 		self.energy = 0
 
 		# Required for motion.
-		self.mass	 = 1
-		self.K		 = .1			# K is a resistance constant.
-		self.walk_force	 = 0.001
-		self.derp_force	 = Vector(0.0, 0.0)
+		self.mass		 = 1
+		self.K			 = .1			# K is a resistance constant.
+		self.walk_force		 = 0.001
+		self.exerted_force	 = Vector(0.0, 0.0)
 
 		# Required for logic.
 		self.task		 = None
@@ -53,7 +53,7 @@ class Cell:
 			self.destination = Point(random.uniform(0,environment.Environment().width),
 									 random.uniform(0,environment.Environment().height))
 			self.destination_type  = "Exploration"
-			self.exert_force()
+			self.calc_force()
 		else:
 			# Otherwise, the cell should try to get it.
 			self.destination = closest_food.pos
@@ -66,7 +66,7 @@ class Cell:
 		if len(environment.Environment().food_at(self.destination,.1)) != 0:
 			distance_to_destination = util.distance(self.pos.x,self.destination.x,self.pos.y,self.destination.y)
 			if distance_to_destination > self.distance_to_start_slowing_down():
-				self.exert_force()
+				self.calc_force()
 		else:
 			self.destination = self.destination_type = self.task = None
 			self.closest_food = self.distance_to_closest_food = None
@@ -79,12 +79,12 @@ class Cell:
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.derp_force - self.vel*self.K/self.mass
-		self.derp_force = Vector(0.0,0.0)
+		self.acl = self.exerted_force - self.vel*self.K/self.mass
+		self.exerted_force = Vector(0.0,0.0)
 
-	def exert_force(self):
+	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
-		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 		self.energy -= self.walk_force
 	
 	"""
