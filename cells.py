@@ -87,7 +87,8 @@ class Cell:
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 		self.energy -= self.walk_force
 	
-	"""
+	
+	"""f
 	Justification for change to return self.get_speed() * 999/2:
 		dist = temp_speed + .999*temp_speed + ...
 			 = sum(temp_speed*i)
@@ -106,7 +107,7 @@ class Cell:
 		temp_speed
 		----------
 		self.K
-	"""	
+	"""
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
