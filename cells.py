@@ -1,6 +1,11 @@
 import unittest, util, environment
 import random, math
 from vector import Vector, Point
+from functools import partial
+from operator import itemgetter, attrgetter
+
+def call(a, f):
+	return f(a)
 
 class Cell:
 	def __init__(self,x,y):
@@ -12,7 +17,7 @@ class Cell:
 		self.energy = 0
 
 		# Required for motion.
-		self.mass	 = 1
+		self.mass	 = 1			# Note: Must be greater than 1.
 		self.K		 = .1			# K is a resistance constant.
 		self.walk_force	 = 0.001
 		self.derp_force	 = Vector(0.0, 0.0)
@@ -37,6 +42,7 @@ class Cell:
 		"""What the cell does should it have no task."""
 		self.task = "FindingFood"
 
+
 	def task_finding_food(self):
 		#closest piece of food
 		SIGHT_RANGE = 0.2
@@ -44,14 +50,20 @@ class Cell:
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.
 		if len(close_food) > 0:
-			closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
+			#closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
+			closest_food = min(close_food, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
 		else: closest_food = None
 
 		"""What the cell does should it be looking for food."""
 		if closest_food is None:
 			# If you can't see food, accelerate in a random direction.
-			self.destination = Point(random.uniform(0,environment.Environment().width),
-									 random.uniform(0,environment.Environment().height))
+			#x = environment.Environment().width
+			#while x == environment.Environment().width:
+			x = random.uniform(0,environment.Environment().width)
+			#y = environment.Environment().height
+			#while y == environment.Environment().height:
+			y = random.uniform(0,environment.Environment().height)
+			self.destination = Point(x, y)
 			self.destination_type  = "Exploration"
 			self.exert_force()
 		else:
@@ -63,8 +75,8 @@ class Cell:
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
 		# If there exists some food item at the destination location,
-		if len(environment.Environment().food_at(self.destination,.1)) != 0:
-			distance_to_destination = util.distance(self.pos.x,self.destination.x,self.pos.y,self.destination.y)
+		if len(environment.Environment().food_at(self.destination, 0)) != 0:
+			distance_to_destination = self.pos.distance_to(self.destination)
 			if distance_to_destination > self.distance_to_start_slowing_down():
 				self.exert_force()
 			else:

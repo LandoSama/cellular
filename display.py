@@ -1,5 +1,6 @@
 import pygame, sys, threading
 from pygame.locals import *
+import pygame.gfxdraw
 Thread = threading.Thread
 
 pygame.init()
@@ -28,11 +29,15 @@ class Display(Thread):
             windowSurfaceObj.fill(whiteColor)
             for cell in self.environment.cell_list:
                 # is the 20 width and the height?
-                pygame.draw.circle(windowSurfaceObj, redColor, convert_to_display_loc((cell.pos.x, cell.pos.y)), 20, 0)
+                x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, redColor)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, redColor)
             # environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
                 food_set = self.environment.food_set.copy()
             for food in food_set:
-                pygame.draw.circle(windowSurfaceObj, greenColor, convert_to_display_loc((food.pos.x, food.pos.y)), 10, 10)
+                x, y = convert_to_display_loc((food.pos.x, food.pos.y))
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 10, greenColor)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 10, greenColor)
         
             for event in pygame.event.get():
                 if event.type ==QUIT:
