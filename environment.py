@@ -9,6 +9,7 @@ class Environment(singleton.Singleton):
 		self.add_food(food_count)
 		self.add_cells(cells_count)
 		self.turn = 0
+		self.reseed_prob = 20
 
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
@@ -28,23 +29,23 @@ class Environment(singleton.Singleton):
 	def tick(self):
 		for cell in self.cell_list:
 			cell.one_tick()
+		if random.randint(0,100)<=self.reseed_prob:
+			self.add_food(1)
 		self.turn += 1
 
 	def food_at(self, pos, r):
 		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
 
 	def remove_food(self, food):
-		self.food_set.remove(food)
-	
-
-
-	def kill_cell(self,cell):
-		pos = cell.get_pos()
-		self.cell_list.remove(cell)
-		self.add_food_at_location(*pos)
+		self.food_set.remove(food)	
 
 	def remove_cell(self,cell):
 		self.cell_list.remove(cell)
+		
+	def kill_cell(self,cell):
+		pos = cell.pos
+		self.cell_list.remove(cell)
+		self.add_food_at_location(pos)
 
 # print_table()
 #	output a table of each cell state to a text file

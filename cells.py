@@ -160,12 +160,9 @@ class Cell:
 						
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
-		elif self.energy <= 0 and random.random() <= 0.3:
-			if random.random() <= 0.3:
-				environment.Environment().kill_cell(self)
-			else:
-				environment.Environment().remove_cell(self)
-
+		elif self.energy <= 0:
+			environment.Environment().kill_cell(self)
+			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
