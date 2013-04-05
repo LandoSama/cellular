@@ -96,7 +96,7 @@ class Cell:
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
-		self.energy -= self.walk_force
+		self.energy -= self.walk_force*abs(self.vel)
 	
 	"""f
 	Justification for change to return self.get_speed() * 999/2:
@@ -119,8 +119,7 @@ class Cell:
 		self.K
 	"""
 
-		"""Changes the cell's position based on its velocity, a.k.a. movement."""
-
+	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""

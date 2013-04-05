@@ -27,7 +27,6 @@ def main():
 	dis = display.display(World)
 
 	for i in range(number_of_test_ticks):
-<<<<<<< HEAD
 		# if the user exited pygame, close the rest of the program
 		if dis.isAlive() ==False:
 			sys.exit()
