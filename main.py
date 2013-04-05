@@ -5,7 +5,7 @@ import cells
 import copy
 import sys
 import display
-
+import pygame
 
 
 def main():
@@ -25,15 +25,17 @@ def main():
 	
 	# dis is a thread
 	dis = display.display(World)
-
+	worldClock = pygame.time.Clock()
+	
 	for i in range(number_of_test_ticks):
 		# if the user exited pygame, close the rest of the program
 		if dis.isAlive() ==False:
 			sys.exit()
-		print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-
+		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+		print worldClock.tick(120)
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
+			
 
 	# if the main loop is over, close the graphics thread
 	dis._Thread__stop()
