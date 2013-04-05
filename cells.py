@@ -8,8 +8,6 @@ class Cell:
 		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
-		self.radius = 0.01
-		self.energy = 0
 
 		# Required for motion.
 		self.mass		 = 1
