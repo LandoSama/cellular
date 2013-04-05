@@ -27,10 +27,12 @@ def main():
 	dis = display.display(World)
 
 	for i in range(number_of_test_ticks):
+<<<<<<< HEAD
 		# if the user exited pygame, close the rest of the program
 		if dis.isAlive() ==False:
 			sys.exit()
-		print 'food: ',len(World.food_set),'\t\tTick: ',i
+		print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
 

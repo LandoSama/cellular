@@ -10,11 +10,10 @@ def call(a, f):
 class Cell:
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
+
 		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
-		self.radius = 0.01
-		self.energy = 0
 
 		# Required for motion.
 		self.mass	 = 1			# Note: Must be greater than 1.
@@ -27,7 +26,7 @@ class Cell:
 		self.destination	 = None
 		self.destination_type	 = None
 		self.radius		 = .01
-		self.energy		 = 0
+		self.energy		 = 1.0
 
 		# Task jumptable!
 		self.TaskTable			= {}
@@ -94,15 +93,12 @@ class Cell:
 		self.pos += self.vel
 		self.vel += self.acl
 		self.acl = self.derp_force - self.vel*self.K/self.mass
-		#print self.vel
-		#print self.acl
-		#print '---'
 
 	def exert_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 	
-	"""
+	"""f
 	Justification for change to return self.get_speed() * 999/2:
 		dist = temp_speed + .999*temp_speed + ...
 			 = sum(temp_speed*i)
@@ -122,6 +118,8 @@ class Cell:
 		----------
 		self.K
 	"""	
+
+		"""Changes the cell's position based on its velocity, a.k.a. movement."""
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -145,15 +143,35 @@ class Cell:
 			self.energy += f.energy
 			environment.Environment().remove_food(f)
 			self.task			 = None
-                        self.destination		 = None
-                        self.closest_food		 = None
-                        self.distance_to_closest_food	 = None
+			self.destination		 = None
+			self.closest_food		 = None
+			self.distance_to_closest_food	 = None
 
+	def life_and_death(self):
+		if self.energy >= 5: #hardcoded threshold
+			#make babby 1
+			x1 = random.uniform(self.x-0.01,self.x+0.01)
+			y1 = random.uniform(self.y-0.01,self.y+0.01)
+			env.Environment().add_cells_at_location(x1,y1)
+			
+			#make babby 2
+			x2 = random.uniform(self.x-0.01,self.x+0.01)
+			y2 = random.uniform(self.y-0.01,self.y+0.01)
+			env.Environment().add_cells_at_location(x2,y2)
+						
+			#make two cells at slightly different positions
+			env.Environment().remove_cell(self)
+		elif self.energy <= 0 and random.random() <= 0.3:
+			if random.random() <= 0.3:
+				env.Environment().kill_cell(self)
+			else:
+				env.Environment().remove_cell(self)
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
+		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
 	def test_taskless(self):
