@@ -1,4 +1,4 @@
-C:\Python27\python "cells.py"
+python "main.py"
 
 pause
 del "%0"
