@@ -34,17 +34,13 @@ class Environment(singleton.Singleton):
 		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
 
 	def remove_food(self, food):
-		self.food_set.remove(food)
-	
+		self.food_set.remove(food)	
 
 
 	def kill_cell(self,cell):
-		pos = cell.get_pos()
+		pos = cell.pos
 		self.cell_list.remove(cell)
-		self.add_food_at_location(*pos)
-
-	def remove_cell(self,cell):
-		self.cell_list.remove(cell)
+		self.add_food_at_location(pos)
 
 # print_table()
 #	output a table of each cell state to a text file
