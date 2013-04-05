@@ -149,22 +149,23 @@ class Cell:
 	def life_and_death(self):
 		if self.energy >= 5: #hardcoded threshold
 			#make babby 1
-			x1 = random.uniform(self.x-0.01,self.x+0.01)
-			y1 = random.uniform(self.y-0.01,self.y+0.01)
-			env.Environment().add_cells_at_location(x1,y1)
+			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
+			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
+			environment.Environment().add_cells_at_location(x1,y1)
 			
 			#make babby 2
-			x2 = random.uniform(self.x-0.01,self.x+0.01)
-			y2 = random.uniform(self.y-0.01,self.y+0.01)
-			env.Environment().add_cells_at_location(x2,y2)
+			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
+			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
+			environment.Environment().add_cells_at_location(x2,y2)
 						
 			#make two cells at slightly different positions
-			env.Environment().remove_cell(self)
+			environment.Environment().remove_cell(self)
 		elif self.energy <= 0 and random.random() <= 0.3:
 			if random.random() <= 0.3:
-				env.Environment().kill_cell(self)
+				environment.Environment().kill_cell(self)
 			else:
-				env.Environment().remove_cell(self)
+				environment.Environment().remove_cell(self)
+
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
