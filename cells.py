@@ -13,21 +13,19 @@ class Cell:
 		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
-		self.radius = 0.01
-		self.energy = 0
 
 		# Required for motion.
-		self.mass	 = 1			# Note: Must be greater than 1.
-		self.K		 = .1			# K is a resistance constant.
-		self.walk_force	 = 0.001
-		self.derp_force	 = Vector(0.0, 0.0)
+		self.mass		 = 1
+		self.K			 = .1			# K is a resistance constant.
+		self.walk_force		 = 0.001
+		self.exerted_force	 = Vector(0.0, 0.0)
 
 		# Required for logic.
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
 		self.radius		 = .01
-		self.energy		 = 0
+		self.energy		 = 1.0
 
 		# Task jumptable!
 		self.TaskTable			= {}
@@ -65,7 +63,7 @@ class Cell:
 			y = random.uniform(0,environment.Environment().height)
 			self.destination = Point(x, y)
 			self.destination_type  = "Exploration"
-			self.exert_force()
+			self.calc_force()
 		else:
 			# Otherwise, the cell should try to get it.
 			self.destination = closest_food.pos
@@ -78,9 +76,7 @@ class Cell:
 		if len(environment.Environment().food_at(self.destination, 0)) != 0:
 			distance_to_destination = self.pos.distance_to(self.destination)
 			if distance_to_destination > self.distance_to_start_slowing_down():
-				self.exert_force()
-			else:
-				self.derp_force = Vector(0.,0.)
+				self.calc_force()
 		else:
 			self.destination = self.destination_type = self.task = None
 			self.closest_food = self.distance_to_closest_food = None
@@ -93,16 +89,16 @@ class Cell:
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.derp_force - self.vel*self.K/self.mass
-		#print self.vel
-		#print self.acl
-		#print '---'
+		self.acl = self.exerted_force - self.vel*self.K/self.mass
+		self.exerted_force = Vector(0.0,0.0)
 
-	def exert_force(self):
+	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
-		self.derp_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+		self.energy -= self.walk_force
 	
-	"""
+	
+	"""f
 	Justification for change to return self.get_speed() * 999/2:
 		dist = temp_speed + .999*temp_speed + ...
 			 = sum(temp_speed*i)
@@ -121,7 +117,7 @@ class Cell:
 		temp_speed
 		----------
 		self.K
-	"""	
+	"""
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
