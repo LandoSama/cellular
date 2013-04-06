@@ -7,7 +7,6 @@ import sys
 import display
 import pygame
 
-
 def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
 		starting_food_count = 100
@@ -32,10 +31,9 @@ def main():
 		if dis.isAlive() ==False:
 			sys.exit()
 		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print worldClock.tick(120)
+		worldClock.tick(120)
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
-			
 
 	# if the main loop is over, close the graphics thread
 	dis._Thread__stop()
