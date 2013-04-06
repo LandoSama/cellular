@@ -1,5 +1,5 @@
 from math import sqrt
-import environment
+#import environment
 
 #assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
 
@@ -61,11 +61,10 @@ class Point(Vector):
 		return Vector(xdiff, ydiff)
 	def distance_to(self, other):
 		#Has no meaning for vectors
-		e = environment.Environment()
 		xdiff = abs(self.x - other.x)
 		ydiff = abs(self.y - other.y)
-		return sqrt(min(xdiff, e.width  - xdiff)**2 + \
-					min(ydiff, e.height - ydiff)**2)
+		return sqrt(min(xdiff, 1 - xdiff)**2 + \
+					min(ydiff, 1 - ydiff)**2)
 		#return abs(self - other)
 	
 
