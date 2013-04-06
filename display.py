@@ -42,27 +42,25 @@ class Display(Thread):
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(radius*display_width), color)
 	def run(self):
 		assert(display_width == display_height)
-		while True:
-			windowSurfaceObj.fill(whiteColor)
-			# environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
-			food_set = self.environment.food_set.copy()
-			for food in food_set:
-				windowSurfaceObj.fill(greenColor, (convert_to_display_loc((food.pos.x, food.pos.y)), (3,3)))
-			for cell in self.environment.cell_list:
-				self.draw(cell, cell.radius, redColor)
-		
-			for event in pygame.event.get():
-				if event.type == QUIT:
-					pygame.quit()
-					return ()
-					
-			pygame.display.update()
-			print 1000/fpsClock.tick(30)
+		#while True:
+		windowSurfaceObj.fill(whiteColor)
+		# environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
+		#food_set = self.environment.food_set.copy()
+		for food in self.environment.food_set:
+			windowSurfaceObj.fill(greenColor, (convert_to_display_loc((food.pos.x, food.pos.y)), (3,3)))
+		for cell in self.environment.cell_list:
+			self.draw(cell, cell.radius, redColor)
+	
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				pygame.quit()
+				return
+				
+		pygame.display.update()
+		#print 1000/fpsClock.tick(30)
 
 def display(environment):
 	dis = Display(environment)
-	dis.start()
+	#dis.start()
 	# return the thread so that main can check if it is alive
-	return(dis)
-	
-
+	return dis

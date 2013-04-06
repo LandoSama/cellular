@@ -1,6 +1,8 @@
 from math import sqrt
 import environment
 
+#assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
+
 class Vector(object):
 	__slots__ = ('x', 'y')
 	"""Vector in toroidal space defined by the dimensions of Environment()."""
@@ -40,9 +42,8 @@ class Point(Vector):
 	#__slots__ = ('x', 'y')
 	def fit_to_torus(self):
 		"""Check vector."""
-		e = environment.Environment()
-		self.x %= e.width
-		self.y %= e.width
+		self.x %= 1
+		self.y %= 1
 	def __init__(self, x, y):
 		super(Point, self).__init__(x, y)
 	def __iadd__(self, other):
@@ -55,11 +56,8 @@ class Point(Vector):
 		return result
 	def __sub__(self, other):
 		"""Return shortest difference vector pointing from other to self."""
-		e = environment.Environment()
-		halfwidth = e.width/2
-		halfheight = e.width/2
-		xdiff = ((self.x - other.x + halfwidth) % e.width) - halfwidth
-		ydiff = ((self.y - other.y + halfheight) % e.width) - halfheight
+		xdiff = ((self.x - other.x + 0.5) % 1) - 0.5
+		ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
 		return Vector(xdiff, ydiff)
 	def distance_to(self, other):
 		#Has no meaning for vectors
