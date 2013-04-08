@@ -19,6 +19,7 @@ mousex, mousey = 0,0
 
 def random_color():
     randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    return randomcolor
 
 def convert_to_display_loc(pos):
     return int(round((pos[0]*display_width))), int(round((pos[1]*display_height)))
