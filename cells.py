@@ -1,11 +1,16 @@
 import unittest, util, environment
 import random, math
+import pygame
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
 
 def call(a, f):
 	return f(a)
+	
+def random_color():
+    randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    return randomcolor
 
 class Cell:
 	def __init__(self,x,y):
@@ -13,6 +18,7 @@ class Cell:
 		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
+		self.color = random_color()
 
 		# Required for motion.
 		self.mass		 = 1
