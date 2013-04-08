@@ -1,4 +1,3 @@
-from __future__ import print_function
 import environment
 import food
 import test
@@ -27,21 +26,12 @@ def main():
 	dis = display.display(World)
 	worldClock = pygame.time.Clock()
 	
-	import numpy
-	from collections import deque
-	fps_prev = deque([0]*10)
-	fps_curr = deque([0]*10)
 	for i in range(number_of_test_ticks):
 		# if the user exited pygame, close the rest of the program
 		if dis.isAlive() == False:
 			sys.exit()
-		#dis.run(numpy.mean(fps_prev))
-		print(numpy.mean(fps_prev))
 		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		fps_curr.append(1000/worldClock.tick(120))
-		fps_curr.popleft()
-		if not i % 10: fps_prev, fps_curr = fps_curr, fps_prev
-		World.tick()
+		print World.tick()
 		#World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread

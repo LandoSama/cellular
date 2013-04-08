@@ -16,8 +16,6 @@ blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
 mousex, mousey = 0,0
 
-COMICSANS = pygame.font.SysFont("Comic Sans MS", 30)
-
 def convert_to_display_loc(pos):
 	return int(pos.x*display_width), int(pos.y*display_height)
 
@@ -53,8 +51,6 @@ class Display(Thread):
 			for cell in self.environment.cell_list:
 				self.draw(cell, cell.radius, redColor)
 			self.environment.lock.release()
-			
-			#windowSurfaceObj.blit(COMICSANS.render("%dfps %d cells" % (fps, len(self.environment.cell_list)), 1, (0,0,0)), (0, 0))
 		
 			for event in pygame.event.get():
 				if event.type == QUIT or event.type == MOUSEBUTTONUP:

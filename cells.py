@@ -95,23 +95,9 @@ class Cell:
 			self.acl = self.exerted_force - self.vel*self.K
 		else: self.acl = (self.exerted_force - self.vel*self.K)/self.mass
 		#acl is change in velocity
-		##newK = self.mass*abs(prev_vel + self.exerted_force/self.mass)**2/2
-		#newK = self.mass*abs(prev_vel.x + self.exerted_force.x/self.mass, prev_vel.y + self.exerted_force.y/self.mass)**2
-		#newK = self.mass*((prev_vel.x + self.exerted_force.x/self.mass)**2 + (prev_vel.y + self.exerted_force.y/self.mass)**2)
-		##oldK = self.mass*abs(prev_vel)**2/2
-		#oldK = self.mass*(prev_vel.x**2 + prev_vel.y**2)
-		#Kdiff = self.mass*(prev_vel.x**2 + prev_vel.x*self.exerted_force.x/self.mass + self.exerted_force.x**2/self.mass**2) - self.mass*prev_vel.x**2
-		#		+ self.mass*(prev_vel.y**2 + prev_vel.y*self.exerted_force.y/self.mass + self.exerted_force.y**2/self.mass**2) - self.mass*prev_vel.y**2
-		#Kdiff = prev_vel.x*self.exerted_force.x + self.exerted_force.x**2/self.mass/2 + prev_vel.y*self.exerted_force.y + self.exerted_force.y**2/self.mass/2
-		#Kdiff = self.exerted_force.x*(prev_vel.x + self.exerted_force.x/self.mass/2) + self.exerted_force.y*(prev_vel.y + self.exerted_force.y/self.mass/2)
-		#self.energy -= Kdiff
-		#if self.exerted_force.x or self.exerted_force.y: self.energy -= self.walk_force/800
-		#would_be_vel = prev_vel + self.exerted_force/self.mass
-		#would_be_vel2 = (prev_vel.x + self.exerted_force.x/self.mass)**2 + (prev_vel.y + self.exerted_force.y/self.mass)**2
-		#would_be_vel2 = (prev_vel.x**2 + 2*prev_vel.x*self.exerted_force.x/self.mass + self.exerted_force.x**2/self.mass**2) + (prev_vel.y + self.exerted_force.y/self.mass)**2
-		#displacement = (prev_vel + self.exerted_force/self.mass/2) #this is the real displacement attributable to exerted_force, not the displacement calculated here (that's just prev_vel)
+		#displacement = (prev_vel + self.exerted_force/self.mass/2)
+		#self.energy -= self.exerted_force*displacement
 		self.energy -= self.exerted_force*prev_vel
-		#if abs(self.exerted_force) > 0: print "Kdiff0", newK - oldK, "Kdiff1", Kdiff, "Kdiff2", self.mass*(would_be_vel2 - prev_vel*prev_vel)/2, "dotprod", self.exerted_force*prev_vel, "Kdiff3-dotprod", self.exerted_force*displacement
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
