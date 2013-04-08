@@ -35,12 +35,9 @@ class Display(Thread):
             for cell in self.environment.cell_list:
                 # is the 20 width and the height?
                 x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
-                
-                #give them a random color
-                new_color = random_color()
-                
-                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, new_color)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, new_color)
+                                
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
             # environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
                 food_set = self.environment.food_set.copy()
             for food in food_set:
