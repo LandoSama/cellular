@@ -1,4 +1,5 @@
 from math import sqrt
+import scipy.weave
 #import environment
 
 #assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
@@ -22,7 +23,7 @@ class Vector(object):
 		return Vector(self.x - other.x, self.y - other.y)
 	def __mul__(self, other):
 		if type(other) == type(self):
-			return Vector(self.x*other.x, self.y*other.y)
+			return self.x*other.x + self.y*other.y
 		elif type(other) == int or type(other) == float:
 			return Vector(self.x*other, self.y*other)
 	def __div__(self, other):
@@ -61,10 +62,27 @@ class Point(Vector):
 		return Vector(xdiff, ydiff)
 	def distance_to(self, other):
 		#Has no meaning for vectors
-		xdiff = abs(self.x - other.x)
-		ydiff = abs(self.y - other.y)
-		return sqrt(min(xdiff, 1 - xdiff)**2 + \
-					min(ydiff, 1 - ydiff)**2)
+		"""
+		selfx = self.x
+		otherx = other.x
+		selfy = self.y
+		othery = other.y
+		code = """
+		"""		#include <stdlib.h>
+				double xdiff = fabs(selfx - otherx);
+				double ydiff = fabs(selfy - othery);
+				xdiff = xdiff < (1.0 - (double)xdiff) ? xdiff : (1.0 - (double)xdiff);
+				ydiff = ydiff < (1.0 - (double)ydiff) ? ydiff : (1.0 - (double)ydiff);
+				return_val = sqrt(xdiff*xdiff + ydiff*ydiff);
+		"""
+		#return scipy.weave.inline(code, ['selfx', 'selfy', 'otherx', 'othery'], type_converters=scipy.weave.converters.blitz, compiler = 'gcc')
+		
+		xdiff = abs(self.x - other.x);
+		ydiff = abs(self.y - other.y);
+		xdiff = xdiff < (1.0 - xdiff) and xdiff or (1.0 - xdiff)
+		ydiff = ydiff < (1.0 - ydiff) and ydiff or (1.0 - ydiff)
+		
+		return sqrt(xdiff*xdiff + ydiff*ydiff)
 		#return abs(self - other)
 	
 

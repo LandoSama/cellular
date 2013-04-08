@@ -1,10 +1,11 @@
 import vector
 import unittest
 TestCase = unittest.TestCase
+from cells import Cell
 
 class Food:
 	def __init__(self, x, y):
-		self.energy = 1
+		self.energy = Cell.BASE_ENERGY
 		self.pos = vector.Point(x, y)
 
 class CreationTest(TestCase):

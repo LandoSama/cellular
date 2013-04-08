@@ -1,10 +1,11 @@
-import cells, food, random, unittest, util, singleton, vector
+import cells, food, random, unittest, util, singleton, vector, threading
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count):
 		"""Generate a 1x1 environment with specified amount of food and cells"""
 		self.cell_list = []
 		self.food_set = set()
+		self.lock = threading.Lock()
 		self.width = self.height = 1.0
 		self.add_food(food_count)
 		self.add_cells(cells_count)
@@ -15,9 +16,9 @@ class Environment(singleton.Singleton):
 		"""Add food_count number of foods at random locations"""
 		for i in range(food_count):
 			self.food_set.add(food.Food(random.uniform(0, self.width), random.uniform(0, self.height)))
-	def add_food_at_location(self, x, y):
+	def add_food_at_location(self, pos):
 		"""Add a food item at location"""
-		self.food_set.add(food.Food(x, y))
+		self.food_set.add(food.Food(pos.x, pos.y))
 
 	def add_cells(self, cell_count):
 		for i in range(cell_count):
@@ -27,17 +28,22 @@ class Environment(singleton.Singleton):
 		self.cell_list.append(cells.Cell(x, y))
 							
 	def tick(self):
+		self.lock.acquire()
 		for cell in self.cell_list:
 			cell.one_tick()
 		if random.randint(0,100)<=self.reseed_prob:
 			self.add_food(1)
 		self.turn += 1
+		self.lock.release()
 
 	def food_at(self, pos, r):
 		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
 
 	def remove_food(self, food):
-		self.food_set.remove(food)	
+		try:
+			self.food_set.remove(food)
+		except KeyError:
+			pass
 
 	def remove_cell(self,cell):
 		self.cell_list.remove(cell)

@@ -3,11 +3,14 @@ import random, math
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
+import weakref
 
 def call(a, f):
 	return f(a)
 
 class Cell:
+	BASE_ENERGY = .001
+	
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 
@@ -26,7 +29,7 @@ class Cell:
 		self.destination	 = None
 		self.destination_type	 = None
 		self.radius		 = .01
-		self.energy		 = 1.0
+		self.energy		 = Cell.BASE_ENERGY
 
 		# Task jumptable!
 		self.TaskTable			= {}
@@ -47,40 +50,36 @@ class Cell:
 		SIGHT_RANGE = 0.2
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
-		#If there is any food within distance SIGHT_RANGE, get the closest one.
-		if len(close_food) > 0:
-			#closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
-			closest_food = min(close_food, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
-		else: closest_food = None
-
-		"""What the cell does should it be looking for food."""
-		if closest_food is None:
-			# If you can't see food, accelerate in a random direction.
-			#x = environment.Environment().width
-			#while x == environment.Environment().width:
-			x = random.uniform(0,environment.Environment().width)
-			#y = environment.Environment().height
-			#while y == environment.Environment().height:
-			y = random.uniform(0,environment.Environment().height)
+		if len(close_food) == 0:
+			"""What the cell does should it be looking for food."""
+			#If you can't see food, accelerate in a random direction.
+			x = random.uniform(0, environment.Environment().width)
+			y = random.uniform(0, environment.Environment().height)
 			self.destination = Point(x, y)
 			self.destination_type  = "Exploration"
 			self.calc_force()
 		else:
-			# Otherwise, the cell should try to get it.
-			self.destination = closest_food.pos
-			self.destination_type = "Food"
+			#If there is any food within distance SIGHT_RANGE, get the closest one.
+			#closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
+			closest_food = min(close_food, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
+			
+			def stop_getting_food(food):
+				"""After the food gets eaten, stop trying to get it."""
+				self.destination = self.destination_type = self.task = None
 			self.task = "GettingFood"
+			self.destination_type = "Food"
+			#weakref.proxy calls stop_getting_food when the food is destroyed.
+			self.destination = weakref.proxy(closest_food.pos, stop_getting_food)
+			self.food_target = weakref.ref(closest_food)
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
-		# If there exists some food item at the destination location,
-		if len(environment.Environment().food_at(self.destination, 0)) != 0:
-			distance_to_destination = self.pos.distance_to(self.destination)
-			if distance_to_destination > self.distance_to_start_slowing_down():
-				self.calc_force()
-		else:
-			self.destination = self.destination_type = self.task = None
-			self.closest_food = self.distance_to_closest_food = None
+		#assert(len(environment.Environment().food_at(self.destination, 0)) != 0)
+		distance_to_destination = self.pos.distance_to(self.destination)
+		if distance_to_destination > self.distance_to_start_slowing_down():
+			self.calc_force()
+		if distance_to_destination <= self.radius:
+			self.eat(self.food_target())
 
 	def get_speed(self):
 		"""Returns the speed of the cell."""
@@ -88,17 +87,40 @@ class Cell:
 
 	def update_coords(self):
 		"""Updates the cell's position, velocity and acceleration in that order."""
-		self.pos += self.vel
+		prev_vel = Vector(self.vel.x, self.vel.y)
+		
+		self.pos += self.vel# + self.acl/2
 		self.vel += self.acl
-		self.acl = self.exerted_force - self.vel*self.K/self.mass
+		if self.mass == 1:
+			self.acl = self.exerted_force - self.vel*self.K
+		else: self.acl = (self.exerted_force - self.vel*self.K)/self.mass
+		#acl is change in velocity
+		##newK = self.mass*abs(prev_vel + self.exerted_force/self.mass)**2/2
+		#newK = self.mass*abs(prev_vel.x + self.exerted_force.x/self.mass, prev_vel.y + self.exerted_force.y/self.mass)**2
+		#newK = self.mass*((prev_vel.x + self.exerted_force.x/self.mass)**2 + (prev_vel.y + self.exerted_force.y/self.mass)**2)
+		##oldK = self.mass*abs(prev_vel)**2/2
+		#oldK = self.mass*(prev_vel.x**2 + prev_vel.y**2)
+		#Kdiff = self.mass*(prev_vel.x**2 + prev_vel.x*self.exerted_force.x/self.mass + self.exerted_force.x**2/self.mass**2) - self.mass*prev_vel.x**2
+		#		+ self.mass*(prev_vel.y**2 + prev_vel.y*self.exerted_force.y/self.mass + self.exerted_force.y**2/self.mass**2) - self.mass*prev_vel.y**2
+		#Kdiff = prev_vel.x*self.exerted_force.x + self.exerted_force.x**2/self.mass/2 + prev_vel.y*self.exerted_force.y + self.exerted_force.y**2/self.mass/2
+		#Kdiff = self.exerted_force.x*(prev_vel.x + self.exerted_force.x/self.mass/2) + self.exerted_force.y*(prev_vel.y + self.exerted_force.y/self.mass/2)
+		#self.energy -= Kdiff
+		#if self.exerted_force.x or self.exerted_force.y: self.energy -= self.walk_force/800
+		#would_be_vel = prev_vel + self.exerted_force/self.mass
+		#would_be_vel2 = (prev_vel.x + self.exerted_force.x/self.mass)**2 + (prev_vel.y + self.exerted_force.y/self.mass)**2
+		#would_be_vel2 = (prev_vel.x**2 + 2*prev_vel.x*self.exerted_force.x/self.mass + self.exerted_force.x**2/self.mass**2) + (prev_vel.y + self.exerted_force.y/self.mass)**2
+		#displacement = (prev_vel + self.exerted_force/self.mass/2) #this is the real displacement attributable to exerted_force, not the displacement calculated here (that's just prev_vel)
+		self.energy -= self.exerted_force*prev_vel
+		#if abs(self.exerted_force) > 0: print "Kdiff0", newK - oldK, "Kdiff1", Kdiff, "Kdiff2", self.mass*(would_be_vel2 - prev_vel*prev_vel)/2, "dotprod", self.exerted_force*prev_vel, "Kdiff3-dotprod", self.exerted_force*displacement
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
-		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
-		self.energy -= self.walk_force*abs(self.vel)
+		self.exerted_force = (self.destination - self.pos)*self.walk_force / abs(self.destination - self.pos)
+		#print self.energy
+		#self.energy -= self.exerted_force*self.vel
 	
-	"""f
+	"""
 	Justification for change to return self.get_speed() * 999/2:
 		dist = temp_speed + .999*temp_speed + ...
 			 = sum(temp_speed*i)
@@ -122,32 +144,17 @@ class Cell:
 	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
-		the cell ought to begin slowing down to reach its destination."""
+		the cell can reach without additional force."""
 		return self.get_speed()/self.K #this is faster and should be equivalent to the below loop
-		
-		#everything below doesn't run but i left it for documentation
-		#return self.get_speed() * 999/2
-		#dist = temp_speed = self.get_speed()
-		dist = 0
-		temp_speed = self.get_speed()
-		while temp_speed > 0:
-			#temp_speed -= self.walk_force/self.K
-			temp_speed -= temp_speed*self.K
-			dist += temp_speed
-		#print "distance_to_start_slowing_down calculated for " + str(id(self))
-		return dist
 
-	def eat(self):
-		for f in environment.Environment().food_at(self.pos, self.radius):
-			self.energy += f.energy
-			environment.Environment().remove_food(f)
-			self.task			 = None
-			self.destination		 = None
-			self.closest_food		 = None
-			self.distance_to_closest_food	 = None
+	def eat(self, food):
+		#for f in environment.Environment().food_at(self.pos, self.radius):
+		self.energy += food.energy
+		environment.Environment().remove_food(food)
+		#The above line automatically resets our task and destination by calling stop_getting_food()
 
 	def life_and_death(self):
-		if self.energy >= 5: #hardcoded threshold
+		if self.energy >= 5*Cell.BASE_ENERGY: #hardcoded threshold
 			#make babby 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
@@ -167,7 +174,6 @@ class Cell:
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
-		self.eat()
 		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
