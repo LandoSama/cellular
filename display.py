@@ -19,6 +19,7 @@ mousex, mousey = 0,0
 
 def random_color():
     randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    return randomcolor
 
 def convert_to_display_loc(pos):
     return int(round((pos[0]*display_width))), int(round((pos[1]*display_height)))
@@ -40,6 +41,9 @@ class Display(Thread):
                 
                 pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, new_color)
                 pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, new_color)
+                                
+       #         pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
+       #         pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
             # environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
                 food_set = self.environment.food_set.copy()
             for food in food_set:
@@ -61,4 +65,3 @@ def display(environment):
     # return the thread so that main can check if it is alive
     return(dis)
     
-
