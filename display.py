@@ -36,7 +36,7 @@ class Display(Thread):
                 x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
                 
                 #give them a random color
-                new_color = random_color
+                new_color = random_color()
                 
                 pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, new_color)
                 pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, new_color)
