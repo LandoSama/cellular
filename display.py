@@ -2,6 +2,7 @@ import pygame, sys, threading
 from pygame.locals import *
 import pygame.gfxdraw
 Thread = threading.Thread
+import random
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -15,6 +16,9 @@ greenColor = pygame.Color(0,255,0)
 blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
 mousex, mousey = 0,0
+
+def random_color():
+    randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
 
 def convert_to_display_loc(pos):
     return int(round((pos[0]*display_width))), int(round((pos[1]*display_height)))
@@ -30,8 +34,12 @@ class Display(Thread):
             for cell in self.environment.cell_list:
                 # is the 20 width and the height?
                 x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
-                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, redColor)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, redColor)
+                
+                #give them a random color
+                new_color = random_color
+                
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, new_color)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, new_color)
             # environment's food set is changing while the for loop runs, so we must make a copy of it so that we do not iterate over a chaning set
                 food_set = self.environment.food_set.copy()
             for food in food_set:
@@ -53,4 +61,3 @@ def display(environment):
     # return the thread so that main can check if it is alive
     return(dis)
     
-
