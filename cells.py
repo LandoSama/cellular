@@ -33,7 +33,7 @@ class Cell:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
+		self.radius		 = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
 		self.energy		 = energy
 
 		# Task jumptable:
