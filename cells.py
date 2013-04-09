@@ -13,7 +13,7 @@ def random_color():
     return randomcolor
 
 class Cell:
-	def __init__(self, x, y, mass=3.0, energy=1.0):
+	def __init__(self, x, y, mass=0.3, energy=0.1):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -33,7 +33,7 @@ class Cell:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = 0.01
+		self.radius		 = self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3)
 		self.energy		 = energy
 
 		# Task jumptable:
@@ -103,8 +103,8 @@ class Cell:
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 		if self.energy > 0:
-			self.energy -= self.walk_force*10
-		else:	self.mass -= self.walk_force*30
+			self.energy -= self.walk_force*1
+		else:	self.mass -= self.walk_force*3
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -125,7 +125,7 @@ class Cell:
 		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3)
 
 	def life_and_death(self):
-		if self.energy >= 5 and self.mass >= 6: #hardcoded threshold
+		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
 			#stats of both babbyz
 			newMass		 = self.mass/2.0
 			newEnergy	 = (self.energy - 3)/2.0
@@ -143,7 +143,7 @@ class Cell:
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
 #		elif self.energy <= 0:			Now it is if the mass is below a certain point
-		elif self.mass <= 1:
+		elif self.mass <= 0.1:
 			environment.Environment().kill_cell(self)
 			
 	def one_tick(self):

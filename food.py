@@ -4,7 +4,7 @@ TestCase = unittest.TestCase
 
 class Food:
 	def __init__(self, x, y):
-		self.energy = 1
+		self.energy = 0.1
 		self.pos = vector.Point(x, y)
 
 class CreationTest(TestCase):
