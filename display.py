@@ -7,7 +7,7 @@ import random
 pygame.init()
 fpsClock = pygame.time.Clock()
 display_width = 1000
-display_height = 700
+display_height = 1000
 windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Nautical Cell Force 2')
 
@@ -33,8 +33,8 @@ class Display(Thread):
                 x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
                 
                 
-                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(display_width*cell.radius), cell.color)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(display_width*cell.radius), cell.color)
                                 
        #         pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
        #         pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
