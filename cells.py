@@ -13,31 +13,34 @@ def random_color():
     return randomcolor
 
 class Cell:
-	def __init__(self,x,y):
+	def __init__(self, x, y, mass=3.0, energy=1.0 color=random_color()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-		self.pos = Point(float(x), float(y))	# Woo vectors!
+		# Position, Velocity and Acceleration vectors:
+		self.pos = Point(float(x), float(y))
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
-		self.color = random_color()
 
-		# Required for motion.
-		self.mass		 = 1
-		self.K			 = .1			# K is a resistance constant.
+		# Required for motion:
+		self.mass		 = mass
+		self.K			 = 0.1			# K is a resistance constant.
 		self.walk_force		 = 0.001
 		self.exerted_force	 = Vector(0.0, 0.0)
 
-		# Required for logic.
+		# Required for logic:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = .01
-		self.energy		 = 1.0
+		self.radius		 = 0.01
+		self.energy		 = energy
 
-		# Task jumptable!
+		# Task jumptable:
 		self.TaskTable			= {}
 		self.TaskTable[None]		= self.task_none
 		self.TaskTable["FindingFood"]	= self.task_finding_food
 		self.TaskTable["GettingFood"]	= self.task_getting_food
+
+		# Misc:
+		self.color = color
 
 #
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
@@ -46,10 +49,9 @@ class Cell:
 		"""What the cell does should it have no task."""
 		self.task = "FindingFood"
 
-
 	def task_finding_food(self):
 		#closest piece of food
-		SIGHT_RANGE = 0.05
+		SIGHT_RANGE = 0.05 + self.radius
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.
@@ -97,7 +99,9 @@ class Cell:
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
-		self.energy -= self.walk_force*10
+		if self.energy > 0:
+			self.energy -= self.walk_force*10
+		else:	self.mass -= self.walk_force*30
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
@@ -106,7 +110,8 @@ class Cell:
 
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
-			self.energy += f.energy
+			self.energy += f.energy/2.0
+			self.mass += f.energy/2.0
 			environment.Environment().remove_food(f)
 			self.task			 = None
 			self.destination		 = None
@@ -114,20 +119,25 @@ class Cell:
 			self.distance_to_closest_food	 = None
 
 	def life_and_death(self):
-		if self.energy >= 5: #hardcoded threshold
+		if self.energy >= 5 and self.mass >= 6: #hardcoded threshold
+			#stats of both babbyz
+			newMass		 = self.mass/2.0
+			newEnergy	 = (self.energy - 3)/2.0
+
 			#make babby 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x1,y1)
+			environment.Environment().add_cells_at_location(x1,y1,newMass,newEnergy)
 			
 			#make babby 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x2,y2)
+			environment.Environment().add_cells_at_location(x2,y2,newMass,newEnergy)
 						
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
-		elif self.energy <= 0:
+#		elif self.energy <= 0:			Now it is if the mass is below a certain point
+		elif self.mass <=
 			environment.Environment().kill_cell(self)
 			
 	def one_tick(self):
