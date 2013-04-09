@@ -163,12 +163,16 @@ class Cell:
 		elif self.energy <= 0:
 			environment.Environment().kill_cell(self)
 			
+	def repel(self):
+		closest_cell = environment.Environment().cell_at(self.pos, self.radius)
+			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
 		self.life_and_death()
+		self.repel()
 
 class TestFunctions(unittest.TestCase):
 	def test_taskless(self):
