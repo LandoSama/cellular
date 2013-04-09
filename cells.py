@@ -20,9 +20,12 @@ class Cell:
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
 
+		# Arbitrary constants:
+		self.K			= 0.1			# K is a resistance constant.
+		self.density		= 1.0			# density is used to calculate radius
+
 		# Required for motion:
 		self.mass		 = mass
-		self.K			 = 0.1			# K is a resistance constant.
 		self.walk_force		 = 0.001
 		self.exerted_force	 = Vector(0.0, 0.0)
 
@@ -93,7 +96,7 @@ class Cell:
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.exerted_force - self.vel*self.K/self.mass
+		self.acl = self.exerted_force - self.vel*self.K*(self.radius**2)/self.mass
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
@@ -117,6 +120,9 @@ class Cell:
 			self.destination		 = None
 			self.closest_food		 = None
 			self.distance_to_closest_food	 = None
+
+	def weight_management(self):
+		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3)
 
 	def life_and_death(self):
 		if self.energy >= 5 and self.mass >= 6: #hardcoded threshold
@@ -145,6 +151,7 @@ class Cell:
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
+		self.weight_management()
 		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
