@@ -13,7 +13,7 @@ def random_color():
     return randomcolor
 
 class Cell:
-	def __init__(self, x, y, mass=3.0, energy=1.0, color=random_color()):
+	def __init__(self, x, y, mass=3.0, energy=1.0):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -40,7 +40,7 @@ class Cell:
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
 		# Misc:
-		self.color = color
+		self.color = random_color()
 
 #
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
@@ -137,7 +137,7 @@ class Cell:
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
 #		elif self.energy <= 0:			Now it is if the mass is below a certain point
-		elif self.mass <=
+		elif self.mass <= 1:
 			environment.Environment().kill_cell(self)
 			
 	def one_tick(self):
