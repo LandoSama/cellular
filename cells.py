@@ -1,5 +1,6 @@
 import unittest, util, environment
 import random, math
+import pygame
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
@@ -7,16 +8,20 @@ import weakref
 
 def call(a, f):
 	return f(a)
+	
+def random_color():
+    randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    return randomcolor
 
 class Cell:
 	BASE_ENERGY = .001
 	
 	def __init__(self,x,y):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-
 		self.pos = Point(float(x), float(y))	# Woo vectors!
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
+		self.color = random_color()
 
 		# Required for motion.
 		self.mass		 = 1
@@ -47,9 +52,10 @@ class Cell:
 
 	def task_finding_food(self):
 		#closest piece of food
-		SIGHT_RANGE = 0.2
+		SIGHT_RANGE = 0.05 + self.radius
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
+
 		if len(close_food) == 0:
 			"""What the cell does should it be looking for food."""
 			#If you can't see food, accelerate in a random direction.
@@ -103,29 +109,7 @@ class Cell:
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / abs(self.destination - self.pos)
-		#print self.energy
-		#self.energy -= self.exerted_force*self.vel
-	
-	"""
-	Justification for change to return self.get_speed() * 999/2:
-		dist = temp_speed + .999*temp_speed + ...
-			 = sum(temp_speed*i)
-			 = temp_speed * sum i=.0 to .999(i) / 1000
-			 = temp_speed * sum i=0 to 999(i/1000)
-			 = temp_speed * sum i=0 to 999(i) / 1000
-			 = temp_speed * (999(1000)/2) / 1000
-			 = temp_speed * 999/2
-	Then that was abandoned, and changed to changed to return get_speed()/self.K:
-		#dist = temp_speed + temp_speed(1-self.K) + temp_speed*(1-self.K)^2 ... + temp_speed
-		sum[i=0 to infinity](temp_speed*(1-self.K)^i)
-		temp_speed*sum((1-self.k)^i)
-		temp_speed*1
-				   ------------
-				   1-(1-self.K)
-		temp_speed
-		----------
-		self.K
-	"""
+		#self.energy -= self.exerted_force*10
 
 	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 	def distance_to_start_slowing_down(self):

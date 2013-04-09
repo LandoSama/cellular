@@ -2,6 +2,7 @@ import pygame, sys, threading
 from pygame.locals import *
 import pygame.gfxdraw
 Thread = threading.Thread
+import random
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -49,7 +50,7 @@ class Display(Thread):
 			for food in self.environment.food_set:
 				windowSurfaceObj.fill(greenColor, (convert_to_display_loc(food.pos), (3,3)))
 			for cell in self.environment.cell_list:
-				self.draw(cell, cell.radius, redColor)
+				self.draw(cell, cell.radius, cell.color)
 			self.environment.lock.release()
 		
 			for event in pygame.event.get():
@@ -58,7 +59,7 @@ class Display(Thread):
 					return
 					
 			pygame.display.flip()
-			print 1000/fpsClock.tick(60)
+			fpsClock.tick(60)
 
 def display(environment):
 	dis = Display(environment)

@@ -49,9 +49,8 @@ class Environment(singleton.Singleton):
 		self.cell_list.remove(cell)
 		
 	def kill_cell(self,cell):
-		pos = cell.pos
 		self.cell_list.remove(cell)
-		self.add_food_at_location(pos)
+		self.add_food_at_location(cell.pos.x, cell.pos.y)
 
 # print_table()
 #	output a table of each cell state to a text file

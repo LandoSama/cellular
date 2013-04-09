@@ -31,7 +31,8 @@ def main():
 		if dis.isAlive() == False:
 			sys.exit()
 		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print World.tick()
+		print 1000/(worldClock.tick() + 0.00000000001)
+		World.tick()
 		#World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread

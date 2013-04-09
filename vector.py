@@ -2,6 +2,22 @@ from math import sqrt
 
 #assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
 
+	
+from cffi import FFI
+ffi = FFI()
+ffi.cdef("double distance(double x1, double y1, double x2, double y2);")
+dist = ffi.verify("""
+	#include <math.h>
+	
+	double distance(double x1, double y1, double x2, double y2) {
+		double xdiff = fabs(x1 - x2);
+		double ydiff = fabs(y1 - y2);
+		xdiff = xdiff < (1.0 - xdiff) ? xdiff : (1.0 - xdiff);
+		ydiff = ydiff < (1.0 - ydiff) ? ydiff : (1.0 - ydiff);
+		return sqrt(xdiff*xdiff + ydiff*ydiff);
+	}
+	""", libraries=[])
+
 class Vector(object):
 	__slots__ = ('x', 'y')
 	"""Vector in toroidal space defined by the dimensions of Environment()."""
@@ -59,29 +75,20 @@ class Point(Vector):
 		ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
 		return Vector(xdiff, ydiff)
 	def distance_to(self, other):
-		#Has no meaning for vectors
-		"""
-		selfx = self.x
-		otherx = other.x
-		selfy = self.y
-		othery = other.y
-		code = """
-		"""		#include <stdlib.h>
-				double xdiff = fabs(selfx - otherx);
-				double ydiff = fabs(selfy - othery);
-				xdiff = xdiff < (1.0 - (double)xdiff) ? xdiff : (1.0 - (double)xdiff);
-				ydiff = ydiff < (1.0 - (double)ydiff) ? ydiff : (1.0 - (double)ydiff);
-				return_val = sqrt(xdiff*xdiff + ydiff*ydiff);
-		"""
-		#return scipy.weave.inline(code, ['selfx', 'selfy', 'otherx', 'othery'], type_converters=scipy.weave.converters.blitz, compiler = 'gcc')
+		#Has no meaning for vectors	
+		return dist.distance(self.x, self.y, other.x, other.y)
 		
-		xdiff = abs(self.x - other.x);
-		ydiff = abs(self.y - other.y);
-		xdiff = xdiff < (1.0 - xdiff) and xdiff or (1.0 - xdiff)
-		ydiff = ydiff < (1.0 - ydiff) and ydiff or (1.0 - ydiff)
-		
-		return sqrt(xdiff*xdiff + ydiff*ydiff)
+		#return dist(self.x, self.y, other.x, other.y)
+		#return sqrt(xdiff*xdiff + ydiff*ydiff)
 		#return abs(self - other)
+		
+def dist(x1,y1,x2,y2):
+	xdiff = abs(x1 - x2);
+	ydiff = abs(y1 - y2);
+	xdiff = min(xdiff, (1.0 - xdiff))
+	ydiff = min(ydiff, (1.0 - ydiff))
+	
+	return sqrt(xdiff*xdiff + ydiff*ydiff)
 	
 
 class VectorAroundZero(object):
