@@ -22,7 +22,7 @@ class Cell:
 
 		# Arbitrary constants:
 		self.K			= 0.1			# K is a resistance constant.
-		self.density		= 1.0			# density is used to calculate radius
+		self.density		= 0.001			# density is used to calculate radius
 
 		# Required for motion:
 		self.mass		 = mass
