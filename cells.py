@@ -44,7 +44,7 @@ class Cell:
 
 	def task_finding_food(self):
 		#closest piece of food
-		SIGHT_RANGE = 0.2
+		SIGHT_RANGE = 0.05 + self.radius
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.
@@ -164,7 +164,21 @@ class Cell:
 			environment.Environment().kill_cell(self)
 			
 	def repel(self):
-		closest_cell = environment.Environment().cell_at(self.pos, self.radius)
+		close_cells = environment.Environment().cell_at(self.pos, self.radius)
+		#If there is any food within distance SIGHT_RANGE, get the closest one.
+		if len(close_cells) > 0:
+			#closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
+			closest_cell = min(close_cells, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
+		else: closest_cell = None
+		
+		if closest_cell != None:
+			#make cells repel away from each other
+			pass
+			
+			
+			
+		#prevent constant repelling
+		closest_cell = None
 			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
