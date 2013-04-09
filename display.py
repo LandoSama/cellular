@@ -17,10 +17,6 @@ blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
 mousex, mousey = 0,0
 
-def random_color():
-    randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
-    return randomcolor
-
 def convert_to_display_loc(pos):
     return int(round((pos[0]*display_width))), int(round((pos[1]*display_height)))
 
@@ -36,11 +32,9 @@ class Display(Thread):
                 # is the 20 width and the height?
                 x, y = convert_to_display_loc((cell.pos.x, cell.pos.y))
                 
-                #give them a random color
-                new_color = random_color
                 
-                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, new_color)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, new_color)
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
                                 
        #         pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
        #         pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
