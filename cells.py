@@ -22,7 +22,7 @@ class Cell:
 
 		# Arbitrary constants:
 		self.K			= 0.1			# K is a resistance constant.
-		self.density		= 0.001			# density is used to calculate radius
+		self.density		= .0001			# density is used to calculate radius
 
 		# Required for motion:
 		self.mass		 = mass
@@ -33,7 +33,7 @@ class Cell:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3)
+		self.radius		 = self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
 		self.energy		 = energy
 
 		# Task jumptable:
@@ -122,7 +122,7 @@ class Cell:
 			self.distance_to_closest_food	 = None
 
 	def weight_management(self):
-		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3)
+		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
 
 	def life_and_death(self):
 		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
