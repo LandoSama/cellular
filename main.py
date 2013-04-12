@@ -5,6 +5,7 @@ import cells
 import copy
 import sys
 import display
+import time
 
 
 
@@ -12,7 +13,7 @@ def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
 		starting_food_count = 100
 		starting_cell_count = 100
-	elif len(sys.argv) == 4:
+	elif len(sys.argv) == 3:
 		starting_food_count  = int(sys.argv[1])
 		starting_cell_count  = int(sys.argv[2])
 	else:
@@ -33,6 +34,7 @@ def main():
 		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
 
 		World.tick()
+		time.sleep(.05)
 		World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread
