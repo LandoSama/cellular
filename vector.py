@@ -2,10 +2,9 @@ from math import sqrt
 
 #assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
 
-	
 from cffi import FFI
 ffi = FFI()
-ffi.cdef("double distance(double x1, double y1, double x2, double y2);")
+ffi.cdef("double distance(double x1, double y1, double x2, double y2); double diff(double a, double b);")
 dist = ffi.verify("""
 	#include <math.h>
 	
@@ -15,6 +14,15 @@ dist = ffi.verify("""
 		xdiff = xdiff < (1.0 - xdiff) ? xdiff : (1.0 - xdiff);
 		ydiff = ydiff < (1.0 - ydiff) ? ydiff : (1.0 - ydiff);
 		return sqrt(xdiff*xdiff + ydiff*ydiff);
+	}
+	
+	double diff(double a, double b) {
+		double xdiff = a - b;
+		if(xdiff > 0.5)
+			xdiff = xdiff - 1;
+		else if(xdiff < -0.5)
+			xdiff = xdiff + 1;
+		return xdiff;
 	}
 	""", libraries=[])
 
@@ -71,9 +79,19 @@ class Point(Vector):
 		return result
 	def __sub__(self, other):
 		"""Return shortest difference vector pointing from other to self."""
-		xdiff = ((self.x - other.x + 0.5) % 1) - 0.5
-		ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
-		return Vector(xdiff, ydiff)
+		#xdiff = self.x - other.x
+		#if xdiff > 0.5:
+			#xdiff = xdiff - 1
+		#elif xdiff < -0.5:
+			#xdiff = xdiff + 1
+		#ydiff = self.y - other.y
+		#if ydiff > 0.5:
+			#ydiff = ydiff - 1
+		#elif ydiff < -0.5:
+			#ydiff = ydiff + 1
+		#xdiff = ((self.x - other.x + 0.5) % 1) - 0.5
+		#ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
+		return Vector(dist.diff(self.x, other.x), dist.diff(self.y, other.y))
 	def distance_to(self, other):
 		#Has no meaning for vectors	
 		return dist.distance(self.x, self.y, other.x, other.y)
@@ -81,7 +99,7 @@ class Point(Vector):
 		#return dist(self.x, self.y, other.x, other.y)
 		#return sqrt(xdiff*xdiff + ydiff*ydiff)
 		#return abs(self - other)
-		
+"""		
 def dist(x1,y1,x2,y2):
 	xdiff = abs(x1 - x2);
 	ydiff = abs(y1 - y2);
@@ -89,7 +107,7 @@ def dist(x1,y1,x2,y2):
 	ydiff = min(ydiff, (1.0 - ydiff))
 	
 	return sqrt(xdiff*xdiff + ydiff*ydiff)
-	
+"""
 
 class VectorAroundZero(object):
 	"""Vector in toroidal space (x,y) with -0.5 <= x,y <= 0.5"""

@@ -50,12 +50,10 @@ class Environment(singleton.Singleton):
 		
 	def kill_cell(self,cell):
 		self.cell_list.remove(cell)
-		self.add_food_at_location(cell.pos.x, cell.pos.y)
+		self.add_food_at_location(cell.pos)
 
-# print_table()
-#	output a table of each cell state to a text file
-
-
+	# print_table()
+	#	output a table of each cell state to a text file
 	def print_table(self,filename,comment=""):
 		"""Prints a table to a textfile with the provided name, with the provided comment above it."""
 		table_file = open(filename,"a")
