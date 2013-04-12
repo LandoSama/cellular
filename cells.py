@@ -54,7 +54,7 @@ class Cell:
 
 	def task_finding_food(self):
 		#closest piece of food
-		SIGHT_RANGE = 0.05 + self.radius
+		SIGHT_RANGE = 0.1 + self.radius
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.

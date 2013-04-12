@@ -34,7 +34,7 @@ def main():
 		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
 
 		World.tick()
-		time.sleep(.05)
+		time.sleep(.03)
 		World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread
