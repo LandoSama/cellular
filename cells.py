@@ -98,9 +98,10 @@ class Cell:
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
-		if self.energy > 0:
+		if self.energy > self.walk_force:
 			self.energy -= self.walk_force*1
-		else:	self.mass -= self.walk_force*3
+		else:
+			self.mass -= self.walk_force*3
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,

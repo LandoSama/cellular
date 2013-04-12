@@ -53,17 +53,25 @@ class Environment(singleton.Singleton):
 	def print_table(self,filename,comment=""):
 		"""Prints a table to a textfile with the provided name, with the provided comment above it."""
 		table_file = open(filename,"a")
-		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\tx_dest\ty_dest\tradius\tenergy\ttask\n")
+		# Header
+		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\tx_acl\ty_acl\tx_dest\ty_dest\tradius\tenergy\tmass\ttask\n")
 		counter = 0
 		for cell in self.cell_list:
-			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.pos.x,4))+"\t"+str(round(cell.pos.y,4))+\
-			"\t"+str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t")
+			# Beginning of the row
+			table_file.write("Cell_"+str(counter)+"\t"+str(round(cell.pos.x,4))+"\t"+str(round(cell.pos.y,4))+"\t"+\
+			str(round(cell.vel.x,4))+"\t"+str(round(cell.vel.y,4))+"\t"+str(round(cell.acl.x,4))+"\t"+str(round(cell.acl.y,4)))
+
+			# Destination issues; need the if/elif for when destination is just Nonetype
 			if type(cell.destination) == type(None):
-				table_file.write("None\tNone\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
+				table_file.write("None\tNone\t")
 			elif type(cell.destination) == vector.Point:
-				table_file.write(str(round(cell.destination.x,4))+"\t"+str(round(cell.destination.y,4))+\
-				"\t"+str(cell.radius)+"\t"+str(cell.energy)+"\t"+str(cell.task)+"\n")
+				table_file.write(str(round(cell.destination.x,4))+"\t"+str(round(cell.destination.y,4))+"\t")
 			else: raise TypeError(str(type(cell.destination))+" "+str(cell.destination))
+
+			# Back to the rest of the row
+			table_file.write(str(round(cell.radius,4))+"\t"+str(round(cell.energy,4))+"\t"+str(round(cell.mass,4))+\
+			"\t"+str(cell.task)+"\n")
+
 			counter += 1
 		table_file.close()
 
