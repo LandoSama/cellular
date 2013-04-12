@@ -88,10 +88,6 @@ class Cell:
 			self.destination = self.destination_type = self.task = None
 			self.closest_food = self.distance_to_closest_food = None
 
-	def get_speed(self):
-		"""Returns the speed of the cell."""
-		return abs(self.vel)
-
 	def update_coords(self):
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
@@ -109,7 +105,7 @@ class Cell:
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		return self.get_speed()/self.K
+		return (abs(self.vel) * self.mass) / (self.K * self.radius**2)
 
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
