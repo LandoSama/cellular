@@ -21,7 +21,7 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Arbitrary constants:
-		self.K			= 0.1			# K is a resistance constant.
+		self.K			= 0.5			# K is a resistance constant.
 		self.density		= .0001			# density is used to calculate radius
 
 		# Required for motion:
