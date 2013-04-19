@@ -5,7 +5,7 @@ from cells import Cell
 
 class Food:
 	def __init__(self, x, y):
-		self.energy = Cell.BASE_ENERGY
+		self.energy = 0.5
 		self.pos = vector.Point(x, y)
 
 class CreationTest(TestCase):

@@ -14,41 +14,43 @@ def random_color():
     return randomcolor
 
 class Cell:
-	BASE_ENERGY = .001
-	
-	def __init__(self,x,y):
+	def __init__(self, x, y, mass=0.3, energy=0.1):
 		"""Cells begin with a specified position, without velocity, task or destination."""
-		self.pos = Point(float(x), float(y))	# Woo vectors!
+		# Position, Velocity and Acceleration vectors:
+		self.pos = Point(float(x), float(y))
 		self.vel = Vector(0.0, 0.0)
 		self.acl = Vector(0.0, 0.0)
-		self.color = random_color()
 
-		# Required for motion.
+		# Arbitrary constants:
+		self.K			= 0.5			# K is a resistance constant.
+		self.density		= .0001			# density is used to calculate radius
+
+		# Required for motion:
 		self.mass		 = 1
-		self.K			 = .1			# K is a resistance constant.
 		self.walk_force		 = 0.001
 		self.exerted_force	 = Vector(0.0, 0.0)
 
-		# Required for logic.
+		# Required for logic:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = .01
-		self.energy		 = Cell.BASE_ENERGY
+		self.radius		 = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
+		self.energy		 = energy
 
-		# Task jumptable!
+		# Task jumptable:
 		self.TaskTable			= {}
 		self.TaskTable[None]		= self.task_none
 		self.TaskTable["FindingFood"]	= self.task_finding_food
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
-#
+		# Misc:
+		self.color = random_color()
+
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
 
 	def task_none(self):
 		"""What the cell does should it have no task."""
 		self.task = "FindingFood"
-
 
 	def task_finding_food(self):
 		#closest piece of food
@@ -82,14 +84,15 @@ class Cell:
 		"""What the cell does when it has found food and is attempting to get it."""
 		#assert(len(environment.Environment().food_at(self.destination, 0)) != 0)
 		distance_to_destination = self.pos.distance_to(self.destination)
+		print self.destination
+		print distance_to_destination
 		if distance_to_destination > self.distance_to_start_slowing_down():
 			self.calc_force()
-		if distance_to_destination <= self.radius:
-			self.eat(self.food_target())
-
-	def get_speed(self):
-		"""Returns the speed of the cell."""
-		return abs(self.vel)
+		
+		for f in environment.Environment().food_at(self.pos, self.radius):
+			self.eat(f)
+		#if distance_to_destination <= self.radius:
+		#	self.eat(self.food_target())
 
 	def update_coords(self):
 		"""Updates the cell's position, velocity and acceleration in that order."""
@@ -97,54 +100,66 @@ class Cell:
 		
 		self.pos += self.vel# + self.acl/2
 		self.vel += self.acl
-		if self.mass == 1:
-			self.acl = self.exerted_force - self.vel*self.K
-		else: self.acl = (self.exerted_force - self.vel*self.K)/self.mass
 		#acl is change in velocity
 		#displacement = (prev_vel + self.exerted_force/self.mass/2)
 		#self.energy -= self.exerted_force*displacement
-		self.energy -= self.exerted_force*prev_vel
+		#self.energy -= self.exerted_force*prev_vel
+		self.acl = self.exerted_force - self.vel*self.K*(self.radius**2)/self.mass
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / abs(self.destination - self.pos)
-		#self.energy -= self.exerted_force*10
+		#self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
+		if self.energy > self.walk_force:
+			self.energy -= self.walk_force*10
+		else:
+			self.mass -= self.walk_force*3
 
 	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
-		the cell can reach without additional force."""
-		return self.get_speed()/self.K #this is faster and should be equivalent to the below loop
+		the cell ought to begin slowing down to reach its destination."""
+		return (abs(self.vel) * self.mass) / (self.K * self.radius**2)
 
-	def eat(self, food):
+	def eat(self, f):
 		#for f in environment.Environment().food_at(self.pos, self.radius):
-		self.energy += food.energy
-		environment.Environment().remove_food(food)
+		self.energy += f.energy/2.0
+		self.mass += f.energy/2.0
+		environment.Environment().remove_food(f)
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
+	def weight_management(self):
+		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
+
 	def life_and_death(self):
-		if self.energy >= 5*Cell.BASE_ENERGY: #hardcoded threshold
+		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
+			#stats of both babbyz
+			newMass		 = self.mass/2.0
+			newEnergy	 = (self.energy - 3)/2.0
+
 			#make babby 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x1,y1)
+			environment.Environment().add_cells_at_location(x1,y1,newMass,newEnergy)
 			
 			#make babby 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x2,y2)
+			environment.Environment().add_cells_at_location(x2,y2,newMass,newEnergy)
 						
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
-		elif self.energy <= 0:
+#		elif self.energy <= 0:			Now it is if the mass is below a certain point
+		elif self.mass <= 0.1:
 			environment.Environment().kill_cell(self)
 			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
-		self.life_and_death()
+		self.weight_management()
+		#self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
 	def test_taskless(self):
