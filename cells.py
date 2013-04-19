@@ -21,7 +21,7 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Arbitrary constants:
-		self.K			= 0.5			# K is a resistance constant.
+		self.K			= 10			# K is a resistance constant.
 		self.density		= .0001			# density is used to calculate radius
 
 		# Required for motion:
@@ -33,7 +33,7 @@ class Cell:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
+		self.radius		 = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/3.0)
 		self.energy		 = energy
 
 		# Task jumptable:
@@ -54,7 +54,7 @@ class Cell:
 
 	def task_finding_food(self):
 		#closest piece of food
-		SIGHT_RANGE = 0.1 + self.radius
+		SIGHT_RANGE = 1 + self.radius
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.
@@ -99,14 +99,14 @@ class Cell:
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 		if self.energy > self.walk_force:
-			self.energy -= self.walk_force*1
+			self.energy -= self.walk_force*1.0
 		else:
-			self.mass -= self.walk_force*3
+			self.mass -= self.walk_force*3.0
 
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		return (abs(self.vel) * self.mass) / (self.K * self.radius**2)
+		return (abs(self.vel) * self.mass) / (self.K * self.radius**2.0)
 
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
@@ -119,13 +119,13 @@ class Cell:
 			self.distance_to_closest_food	 = None
 
 	def weight_management(self):
-		self.radius = ( 3*self.mass*self.density / (4*math.pi) )**(1/3.0)
+		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/3.0)
 
 	def life_and_death(self):
 		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
 			#stats of both babbyz
 			newMass		 = self.mass/2.0
-			newEnergy	 = (self.energy - 3)/2.0
+			newEnergy	 = (self.energy - 3.0)/2.0
 
 			#make babby 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
