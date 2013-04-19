@@ -152,14 +152,6 @@ class Cell:
 		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
-	def test_taskless(self):
-		"""Tests one_tick() giving taskless cells a random walk."""
-		c = Cell(0,0)
-		# When a cell is spawned, it should have no task.
-		self.assertEquals(c.task,None)
-		c.one_tick()
-		self.assertEquals(c.task,"FindingFood")
-
 	def test_position(self):
 		"""Gives the cell a random position, and tests if the cell is
 		at that position."""
@@ -177,6 +169,15 @@ class TestFunctions(unittest.TestCase):
 		e = environment.Environment()
 		self.assertAlmostEquals(.00, util.distance(.00, e.width, e.height, 0.0))
 		self.assertAlmostEquals(.05, util.distance(.02, e.width-.01, .03, e.height-.01))
+
+	def test_Vector_multiplication(self):
+		self.v1 = Vector(1,5)
+		self.v2 = self.v1*5
+		self.v3 = self.v1*.5
+		self.assertEquals(5,self.v2.x)
+		self.assertEquals(25,self.v2.y)
+		self.assertEquals(.5,self.v3.x)
+		self.assertEquals(2.5,self.v3.y)
 
 if __name__ == "__main__":
 	unittest.main()
