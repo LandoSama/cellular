@@ -17,12 +17,7 @@ dist = ffi.verify("""
 	}
 	
 	double diff(double a, double b) {
-		double xdiff = a - b;
-		if(xdiff > 0.5)
-			xdiff = xdiff - 1;
-		else if(xdiff < -0.5)
-			xdiff = xdiff + 1;
-		return xdiff;
+		return fmod(a - b + 1.5, 1.0) - 0.5; // < -0.5 and > 0.5 wrap around using fmod
 	}
 	""", libraries=[])
 

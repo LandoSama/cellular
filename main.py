@@ -31,7 +31,7 @@ def main():
 		if dis.isAlive() == False:
 			sys.exit()
 		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		#print 1000/(worldClock.tick(120) + 0.00000000001)
+		print 1000/(worldClock.tick(120) + 0.00000000001)
 		World.tick()
 		#World.print_table("Main_Test.txt","Tick: "+str(i))
 
