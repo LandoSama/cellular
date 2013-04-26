@@ -10,7 +10,7 @@ class Environment(singleton.Singleton):
 		self.add_cells(cells_count)
 		self.turn = 0
 		self.reseed_prob = 20
-		self.resistance = 10
+		self.resistance = 600
 
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
@@ -24,7 +24,7 @@ class Environment(singleton.Singleton):
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 			
-	def add_cells_at_location(self, x, y, mass=None, energy=None, color=None,x_vel=0,y_vel=0):
+	def add_cells_at_location(self, x, y, mass=1, energy=None, color=None,x_vel=0,y_vel=0):
 		self.cell_list.append(cells.Cell(x, y, mass, energy, x_vel, y_vel))
 							
 	def tick(self):

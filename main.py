@@ -32,6 +32,8 @@ def main():
 		if dis.isAlive() ==False:
 			sys.exit()
 		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+		print 'Resistance: ', environment.Environment().resistance
+	
 
 		World.tick()
 		time.sleep(.03)

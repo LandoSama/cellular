@@ -88,7 +88,7 @@ class Cell:
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.exerted_force - self.vel*environment.Environment().resistance*(self.radius)/self.mass
+		self.acl = self.exerted_force - self.vel*abs(self.vel)*environment.Environment().resistance*(self.radius)/self.mass
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
