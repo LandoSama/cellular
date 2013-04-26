@@ -10,6 +10,7 @@ class Environment(singleton.Singleton):
 		self.add_cells(cells_count)
 		self.turn = 0
 		self.reseed_prob = 20
+		self.resistance = 10
 
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
