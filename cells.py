@@ -27,14 +27,13 @@ class Cell:
 		self.mass		 = mass
 		self.walk_force		 = 0.001
 		self.exerted_force	 = Vector(0.0, 0.0)
+		self.weight_management()
 
 		# Required for logic:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.radius		 = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/3.0)
 		self.energy		 = energy
-		self.sight_range	 = .2 + self.radius
 
 		# Task jumptable:
 		self.TaskTable			= {}
