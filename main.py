@@ -6,7 +6,7 @@ import copy
 import sys
 import display
 import time
-
+import inputbox
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
 
 		World.tick()
 		time.sleep(.03)
-		World.print_table("Main_Test.txt","Tick: "+str(i))
+#		World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread
 	dis._Thread__stop()
