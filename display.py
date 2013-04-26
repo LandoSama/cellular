@@ -1,4 +1,4 @@
-import pygame, sys, threading
+import pygame, sys, threading, environment
 from pygame.locals import *
 import pygame.gfxdraw
 Thread = threading.Thread
@@ -49,6 +49,11 @@ class Display(Thread):
                 if event.type ==QUIT:
                     pygame.quit()
                     return ()
+                elif event.type ==KEYDOWN:
+                    if event.key == K_u:
+                        environment.Environment().resistance +=100
+                    elif event.key == K_d:
+                        environment.Environment().resistance -=100
                     
             pygame.display.update()
             fpsClock.tick(15)
