@@ -6,8 +6,8 @@ import random
 
 pygame.init()
 fpsClock = pygame.time.Clock()
-display_width = 1000
-display_height = 1000
+display_width = 500
+display_height = 500
 windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Nautical Cell Force 2')
 
@@ -34,7 +34,7 @@ class Display(Thread):
                 
                 
                 pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(display_width*cell.radius), cell.color)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(display_width*cell.radius), cell.color)
+#                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(display_width*cell.radius), cell.color)
                                 
        #         pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 20, cell.color)
        #         pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 20, cell.color)
@@ -42,8 +42,9 @@ class Display(Thread):
                 food_set = self.environment.food_set.copy()
             for food in food_set:
                 x, y = convert_to_display_loc((food.pos.x, food.pos.y))
-                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, 10, greenColor)
-                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, 10, greenColor)
+                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(0.001*display_width), greenColor)
+                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
+#                pygame.gfxdraw.rectangle(windowSurfaceObj,x,y,int(0.01*display_width), greenColor)
         
             for event in pygame.event.get():
                 if event.type ==QUIT:

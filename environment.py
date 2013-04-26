@@ -9,7 +9,7 @@ class Environment(singleton.Singleton):
 		self.add_food(food_count)
 		self.add_cells(cells_count)
 		self.turn = 0
-		self.reseed_prob = 20
+		self.reseed_prob = 10
 		self.resistance = 600
 
 	def add_food(self, food_count):
