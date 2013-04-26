@@ -21,7 +21,7 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Arbitrary constants:
-		self.density		= .0001			# density is used to calculate radius
+		self.density		= .005			# density is used to calculate radius
 
 		# Required for motion:
 		self.mass		 = mass
@@ -91,7 +91,7 @@ class Cell:
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		self.pos += self.vel
 		self.vel += self.acl
-		self.acl = self.exerted_force - self.vel*environment.Environment().resistance*(self.radius**2)/self.mass
+		self.acl = self.exerted_force - self.vel*environment.Environment().resistance*(self.radius)/self.mass
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
@@ -105,7 +105,8 @@ class Cell:
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		return (abs(self.vel) * self.mass) / (environment.Environment().resistance * self.radius**2.0)
+#		return (abs(self.vel) * self.mass) / (environment.Environment().resistance * self.radius**2.0)
+		return (abs(self.vel) * self.mass) / (environment.Environment().resistance * self.radius)
 
 	def eat(self):
 		for f in environment.Environment().food_at(self.pos, self.radius):
@@ -118,7 +119,7 @@ class Cell:
 			self.distance_to_closest_food	 = None
 
 	def weight_management(self):
-		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/3.0)
+		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 
 	def life_and_death(self):
 		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
