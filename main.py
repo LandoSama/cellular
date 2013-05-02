@@ -6,7 +6,7 @@ import copy
 import sys
 import display
 import time
-import inputbox
+
 
 
 def main():
