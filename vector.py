@@ -43,11 +43,17 @@ class Vector(object):
 			return self.x*other.x + self.y*other.y
 		elif type(other) == int or type(other) == float:
 			return Vector(self.x*other, self.y*other)
+		return NotImplemented
+	def __rmul__(self, other):
+		if type(other) == int or type(other) == float:
+			return Vector(self.x*other, self.y*other)
+		return NotImplemented
 	def __div__(self, other):
 		if type(other) == type(self):
 			return Vector(self.x/other.x, self.y/other.y)
 		elif type(other) == int or type(other) == float:
 			return Vector(self.x/other, self.y/other)
+		return NotImplemented
 	def __neg__(self):
 		return Vector(-self.x, -self.y)
 	def __abs__(self):

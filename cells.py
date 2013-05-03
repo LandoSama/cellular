@@ -85,8 +85,6 @@ class Cell:
 		"""What the cell does when it has found food and is attempting to get it."""
 		#assert(len(environment.Environment().food_at(self.destination, 0)) != 0)
 		distance_to_destination = self.pos.distance_to(self.destination)
-		print self.destination
-		print distance_to_destination
 		if distance_to_destination > self.distance_to_start_slowing_down():
 			self.calc_force()
 		
