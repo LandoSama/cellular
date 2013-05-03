@@ -49,7 +49,11 @@ class Cell:
 
 	def task_finding_food(self):
 		#closest piece of food
+<<<<<<< HEAD
 		SIGHT_RANGE = 0.01
+=======
+		SIGHT_RANGE = 0.05 + self.radius
+>>>>>>> a46837dc179796e6d148be7cf0f3b59a4e67cf84
 
 		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		#If there is any food within distance SIGHT_RANGE, get the closest one.
@@ -74,7 +78,7 @@ class Cell:
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
-		# If there exists some food item at the destination location,
+		# If there exists some food item at the destination location,		
 		if len(environment.Environment().food_at(self.destination, 0)) != 0:
 			distance_to_destination = self.pos.distance_to(self.destination)
 			if distance_to_destination > self.distance_to_start_slowing_down():
@@ -130,12 +134,30 @@ class Cell:
 		elif self.energy <= 0:
 			environment.Environment().kill_cell(self)
 			
+	def repel(self):
+		close_cells = environment.Environment().cell_at(self.pos, self.radius)
+		#If there is any food within distance SIGHT_RANGE, get the closest one.
+		if len(close_cells) > 0:
+			#closest_food = min(close_food, key = lambda food: self.pos.distance_to(food.pos))
+			closest_cell = min(close_cells, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
+		else: closest_cell = None
+		
+		if closest_cell != None:
+			#make cells repel away from each other
+			pass
+			
+			
+			
+		#prevent constant repelling
+		closest_cell = None
+			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
 		self.TaskTable[self.task]()
 		self.update_coords()
 		self.eat()
 		self.life_and_death()
+		self.repel()
 
 class TestFunctions(unittest.TestCase):
 	def test_taskless(self):

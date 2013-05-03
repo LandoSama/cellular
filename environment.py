@@ -35,7 +35,10 @@ class Environment(singleton.Singleton):
 
 	def food_at(self, pos, r):
 		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
-
+		
+	def cell_at(self,pos,r):
+		return [cell for cell in self.cell_list if pos.distance_to(cell.pos) <= r]
+		
 	def remove_food(self, food):
 		self.food_set.remove(food)	
 
