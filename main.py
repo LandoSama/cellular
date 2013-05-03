@@ -6,6 +6,7 @@ import copy
 import sys
 import display
 import pygame
+#import inputbox
 
 def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
@@ -33,7 +34,7 @@ def main():
 
 		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
 		#print 1000/
-		(worldClock.tick(120) + 0.00000000001)
+		(worldClock.tick(60) + 0.00000000001)
 		World.tick()
 		World.print_table("Main_Test.txt","Tick: "+str(i))
 
