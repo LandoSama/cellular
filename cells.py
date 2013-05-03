@@ -75,7 +75,7 @@ class Cell:
 		"""What the cell does when it has found food and is attempting to get it."""
 		# If there exists some food item at the destination location,
 		SIGHT_RANGE = 0.05 + self.radius
-		close_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
+		closest_food = environment.Environment().food_at(self.pos, SIGHT_RANGE)
 		self.destination = closest_food.pos		
 		if len(environment.Environment().food_at(self.destination, 0)) != 0:
 			distance_to_destination = self.pos.distance_to(self.destination)
