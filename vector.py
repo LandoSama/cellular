@@ -1,5 +1,25 @@
 from math import sqrt
-import environment
+
+#assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
+
+from cffi import FFI
+ffi = FFI()
+ffi.cdef("double distance(double x1, double y1, double x2, double y2); double diff(double a, double b);")
+dist = ffi.verify("""
+	#include <math.h>
+	
+	double distance(double x1, double y1, double x2, double y2) {
+		double xdiff = fabs(x1 - x2);
+		double ydiff = fabs(y1 - y2);
+		xdiff = xdiff < (1.0 - xdiff) ? xdiff : (1.0 - xdiff);
+		ydiff = ydiff < (1.0 - ydiff) ? ydiff : (1.0 - ydiff);
+		return sqrt(xdiff*xdiff + ydiff*ydiff);
+	}
+	
+	double diff(double a, double b) {
+		return fmod(a - b + 1.5, 1.0) - 0.5; // < -0.5 and > 0.5 wrap around using fmod
+	}
+	""", libraries=[])
 
 class Vector(object):
 	__slots__ = ('x', 'y')
@@ -20,7 +40,7 @@ class Vector(object):
 		return Vector(self.x - other.x, self.y - other.y)
 	def __mul__(self, other):
 		if type(other) == type(self):
-			return Vector(self.x*other.x, self.y*other.y)
+			return self.x*other.x + self.y*other.y
 		elif type(other) == int or type(other) == float:
 			return Vector(self.x*other, self.y*other)
 	def __div__(self, other):
@@ -40,9 +60,8 @@ class Point(Vector):
 	#__slots__ = ('x', 'y')
 	def fit_to_torus(self):
 		"""Check vector."""
-		e = environment.Environment()
-		self.x %= e.width
-		self.y %= e.width
+		self.x %= 1
+		self.y %= 1
 	def __init__(self, x, y):
 		super(Point, self).__init__(x, y)
 	def __iadd__(self, other):
@@ -55,21 +74,35 @@ class Point(Vector):
 		return result
 	def __sub__(self, other):
 		"""Return shortest difference vector pointing from other to self."""
-		e = environment.Environment()
-		halfwidth = e.width/2
-		halfheight = e.width/2
-		xdiff = ((self.x - other.x + halfwidth) % e.width) - halfwidth
-		ydiff = ((self.y - other.y + halfheight) % e.width) - halfheight
-		return Vector(xdiff, ydiff)
+		#xdiff = self.x - other.x
+		#if xdiff > 0.5:
+			#xdiff = xdiff - 1
+		#elif xdiff < -0.5:
+			#xdiff = xdiff + 1
+		#ydiff = self.y - other.y
+		#if ydiff > 0.5:
+			#ydiff = ydiff - 1
+		#elif ydiff < -0.5:
+			#ydiff = ydiff + 1
+		#xdiff = ((self.x - other.x + 0.5) % 1) - 0.5
+		#ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
+		return Vector(dist.diff(self.x, other.x), dist.diff(self.y, other.y))
 	def distance_to(self, other):
-		#Has no meaning for vectors
-		e = environment.Environment()
-		xdiff = abs(self.x - other.x)
-		ydiff = abs(self.y - other.y)
-		return sqrt(min(xdiff, e.width  - xdiff)**2 + \
-					min(ydiff, e.height - ydiff)**2)
+		#Has no meaning for vectors	
+		return dist.distance(self.x, self.y, other.x, other.y)
+		
+		#return dist(self.x, self.y, other.x, other.y)
+		#return sqrt(xdiff*xdiff + ydiff*ydiff)
 		#return abs(self - other)
+"""		
+def dist(x1,y1,x2,y2):
+	xdiff = abs(x1 - x2);
+	ydiff = abs(y1 - y2);
+	xdiff = min(xdiff, (1.0 - xdiff))
+	ydiff = min(ydiff, (1.0 - ydiff))
 	
+	return sqrt(xdiff*xdiff + ydiff*ydiff)
+"""
 
 class VectorAroundZero(object):
 	"""Vector in toroidal space (x,y) with -0.5 <= x,y <= 0.5"""

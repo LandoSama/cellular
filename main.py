@@ -5,9 +5,7 @@ import cells
 import copy
 import sys
 import display
-import time
-
-
+import pygame
 
 def main():
 	if len(sys.argv) == 2 and sys.argv[1] == '-':
@@ -23,21 +21,24 @@ def main():
 	
 	# dis is a thread
 	dis = display.display(World)
+	worldClock = pygame.time.Clock()
 
-	# dis is a tick counter
+	# i is a tick counter
 	i = 0
 	while True:
 		i += 1
 		# if the user exited pygame, close the rest of the program
-		if dis.isAlive() ==False:
+		if dis.isAlive() == False:
 			sys.exit()
+
 		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
 		print 'Resistance: ', environment.Environment().resistance
 	
-
+		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+		#print 1000/
+		(worldClock.tick(60) + 0.00000000001)
 		World.tick()
-		time.sleep(.03)
-#		World.print_table("Main_Test.txt","Tick: "+str(i))
+		World.print_table("Main_Test.txt","Tick: "+str(i))
 
 	# if the main loop is over, close the graphics thread
 	dis._Thread__stop()
