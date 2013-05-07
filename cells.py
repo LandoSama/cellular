@@ -22,7 +22,7 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Phenotypes:
-		self.Phenotype			= Phenotype		# Stored for calc_variance's sake
+		self.phenotype			= Phenotype		# Stored for calc_variance's sake
 		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
 		self.walk_force			= Phenotype[1]
 		self.div_energy			= Phenotype[2]		# How much energy a cell needs to divide
@@ -141,9 +141,8 @@ class Cell:
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
 
-	def calculate_variance(self):
-		return self.Phenotype
-		
+	def calculate_variance(self):		
+		return self.phenotype
 
 	def life_and_death(self):
 		if self.mass >= self.div_mass and self.energy >= self.div_energy:
