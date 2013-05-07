@@ -155,13 +155,13 @@ class Cell:
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype1	= self.calculate_variance()
-			environment.Environment().add_cells_at_location(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1)
+			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
 			#make babby 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype2	= self.calculate_variance()
-			environment.Environment().add_cells_at_location(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2)
+			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)
