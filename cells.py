@@ -133,7 +133,7 @@ class Cell:
 	def eat(self, f):
 		#for f in environment.Environment().food_at(self.pos, self.radius):
 		self.energy += f.energy/self.emRatio
-		self.mass += f.energy - (f.energy/emRatio)
+		self.mass += f.energy - (f.energy/self.emRatio)
 		environment.Environment().remove_food(f)
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
