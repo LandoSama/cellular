@@ -39,9 +39,11 @@ class Display(Thread):
 			y_all.append(real_y - display_height)
 		for x in x_all:
 			for y in y_all:
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
+#				circle(Surface, color, pos, radius, width=0)
+				pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))
+#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
+#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
+#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
 				
 				
 	def run(self):
@@ -53,6 +55,7 @@ class Display(Thread):
 				x, y = convert_to_display_loc(food.pos)
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 			for cell in self.environment.cell_list:
+				print cell.color
 				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			self.environment.lock.release()
 
