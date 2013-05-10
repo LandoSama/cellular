@@ -39,9 +39,26 @@ class Display(Thread):
 			y_all.append(real_y - display_height)
 		for x in x_all:
 			for y in y_all:
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
+				r = int(radius*display_width)
+				
+				#s = pygame.Surface((r*2 + 1, r*2 + 1), flags=SRCALPHA)
+				#s.fill(Color(0,0,0,0))
+				#pygame.gfxdraw.aacircle(s, r, r, r, color)
+				#pygame.gfxdraw.filled_circle(s, r, r, r, color)
+				#s2 = pygame.Surface((r*2 + 1, r*2 + 1), flags=SRCALPHA)
+				#s2.fill(Color(255,255,255,255))
+				#pygame.gfxdraw.aacircle(s2, r, r, int(r*0.5), Color(0,0,0,128))
+				#pygame.gfxdraw.filled_circle(s2, r, r, int(r*0.5), Color(0,0,0,238))
+				#s.blit(s2, (0,0), None, BLEND_RGBA_MIN)
+				#windowSurfaceObj.fill(Color(0,0,0))
+				#windowSurfaceObj.blit(s2, (x - r, y - r))
+				
+				#pygame.draw.circle(windowSurfaceObj, color, (x,y), r, min(5,r))
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r, color)
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r-1, color)
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r-2, color)
+				#pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
+				#pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
 				
 				
 	def run(self):
