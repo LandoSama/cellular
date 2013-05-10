@@ -52,7 +52,7 @@ class Cell:
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
 		# Misc:
-		self.color = random_color()
+		#self.color = random_color()
 
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
 
