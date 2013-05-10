@@ -141,8 +141,10 @@ class Cell:
 		newphenotype = []
 		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
 			    self.phenotype[5][2] + random.randint(-15,15))
-		while (newcolor[0]+newcolor[1]+newcolor[2])/3 > 150 and newcolor[0] < 0 and newcolor[1] < 0 and newcolor[2] < 0:
+		while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 and 255<newcolor[0]<0 and 255<newcolor[1]<0 and 255<newcolor[2]<0:
+			print newcolor,"sucks! Its average is either above 150 or one of its color values is impossible!"
 			newcolor = (color[0]+random.randint(-15,15), color[1]+random.randint(-15,15)/1.15, color[2]+random.randint(-15,15))
+		print newcolor,"should be fine, and if it isn't, FUCK."
 		for t in self.phenotype[:5]:	newphenotype.append(t)
 		newphenotype.append(newcolor)
 		for t in self.phenotype[6:]:	newphenotype.append(t)
