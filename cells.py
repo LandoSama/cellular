@@ -14,19 +14,29 @@ def random_color():
     return randomcolor
 
 class Cell:
-	def __init__(self, x, y, mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.001, 0.5,0.6, 0.005, None, 0.0]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
 		self.vel = Vector(x_vel, y_vel)
 		self.acl = Vector(0.0, 0.0)
 
-		# Arbitrary constants:
-		self.density		= .005			# density is used to calculate radius
-
+		# Phenotypes:
+		self.phenotype			= Phenotype		# Stored for calc_variance's sake
+		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
+		self.walk_force			= Phenotype[1]
+		self.div_energy			= Phenotype[2]		# How much energy a cell needs to divide
+		self.div_mass			= Phenotype[3]		# How much mass a cell needs to divide
+		self.density			= Phenotype[4]
+		if Phenotype[5] == None:
+			self.color = random_color()
+			Phenotype[5] = self.color
+		else:	self.color		= Phenotype[5]
+		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
+		
 		# Required for motion:
-		self.mass		 = 1
-		self.walk_force		 = 0.001
+		self.energy		 = energy
+		self.mass		 = mass
 		self.exerted_force	 = Vector(0.0, 0.0)
 		self.weight_management()
 
@@ -34,7 +44,6 @@ class Cell:
 		self.task		 = None
 		self.destination	 = None
 		self.destination_type	 = None
-		self.energy		 = energy
 
 		# Task jumptable:
 		self.TaskTable			= {}
@@ -43,7 +52,7 @@ class Cell:
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
 		# Misc:
-		self.color = random_color()
+		#self.color = random_color()
 
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
 
@@ -115,7 +124,6 @@ class Cell:
 		else:
 			self.mass -= self.walk_force*3.0
 
-	"""Changes the cell's position based on its velocity, a.k.a. movement."""
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
@@ -123,8 +131,8 @@ class Cell:
 
 	def eat(self, f):
 		#for f in environment.Environment().food_at(self.pos, self.radius):
-		self.energy += f.energy/2.0
-		self.mass += f.energy/2.0
+		self.energy += f.energy/self.emRatio
+		self.mass += f.energy - (f.energy/self.emRatio)
 		environment.Environment().remove_food(f)
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
@@ -132,21 +140,26 @@ class Cell:
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
 
+	def calculate_variance(self):		
+		return self.phenotype
+
 	def life_and_death(self):
-		if self.energy >= 0.5 and self.mass >= 0.6: #hardcoded threshold
+		if self.mass >= self.div_mass and self.energy >= self.div_energy:
 			#stats of both babbyz
-			newMass		 = self.mass/2.0
-			newEnergy	 = (self.energy - 3.0)/2.0
+			newMass		= self.mass/self.emRatio
+			newEnergy	= (self.energy - 3.0)/self.emRatio
 
 			#make babby 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y)
+			newPhenotype1	= self.calculate_variance()
+			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
 			#make babby 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			environment.Environment().add_cells_at_location(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y)
+			newPhenotype2	= self.calculate_variance()
+			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
 			#make two cells at slightly different positions
 			environment.Environment().remove_cell(self)

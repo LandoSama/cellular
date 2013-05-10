@@ -25,9 +25,6 @@ class Environment(singleton.Singleton):
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 			
-	def add_cells_at_location(self, x, y, mass=.3, energy=None, color=None,x_vel=0,y_vel=0):
-		self.cell_list.append(cells.Cell(x, y, mass, energy, x_vel, y_vel))
-							
 	def tick(self):
 		self.lock.acquire()
 		for cell in self.cell_list:
