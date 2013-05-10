@@ -141,7 +141,7 @@ class Cell:
 		newphenotype = []
 		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
 			    self.phenotype[5][2] + random.randint(-15,15))
-		while (newcolor[0]+newcolor[1]+newcolor[2])/3 > 150 and newcolor[0] >= 0 and newcolor[1] >= 0 and newcolor[2] >= 0:
+		while (newcolor[0]+newcolor[1]+newcolor[2])/3 > 150 and newcolor[0] < 0 and newcolor[1] < 0 and newcolor[2] < 0:
 			newcolor = (color[0]+random.randint(-15,15), color[1]+random.randint(-15,15)/1.15, color[2]+random.randint(-15,15))
 		for t in self.phenotype[:5]:	newphenotype.append(t)
 		newphenotype.append(newcolor)
