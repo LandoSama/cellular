@@ -1,4 +1,4 @@
-import unittest, util, environment
+import unittest, environment
 import random, math
 from vector import Vector, Point
 from functools import partial
@@ -9,8 +9,8 @@ def call(a, f):
 	return f(a)
 	
 def random_color():
-    randomcolor = random.randint(0,255),random.randint(0,255),random.randint(0,255)
-    return randomcolor
+	randomcolor = random.randint(0,155),random.randint(0,155)/1.15,random.randint(0,155)
+	return randomcolor
 
 class Cell:
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.001, 0.5,0.6, 0.005, None, 0.0]):
@@ -50,11 +50,7 @@ class Cell:
 		self.TaskTable["FindingFood"]	= self.task_finding_food
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
-		# Misc:
-		#self.color = random_color()
-
 #	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
-
 	def task_none(self):
 		"""What the cell does should it have no task."""
 		self.task = "FindingFood"
@@ -141,8 +137,16 @@ class Cell:
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
 
-	def calculate_variance(self):		
-		return self.phenotype
+	def calculate_variance(self):
+		newphenotype = []
+		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
+			    self.phenotype[5][2] + random.randint(-15,15))
+		while (newcolor[0]+newcolor[1]+newcolor[2])/3 > 150 and newcolor[0] >= 0 and newcolor[1] >= 0 and newcolor[2] >= 0:
+			newcolor = (color[0]+random.randint(-15,15), color[1]+random.randint(-15,15)/1.15, color[2]+random.randint(-15,15))
+		for t in self.phenotype[:5]:	newphenotype.append(t)
+		newphenotype.append(newcolor)
+		for t in self.phenotype[6:]:	newphenotype.append(t)
+		return newphenotype
 
 	def life_and_death(self):
 		if self.mass >= self.div_mass and self.energy >= self.div_energy:
