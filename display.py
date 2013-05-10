@@ -49,7 +49,6 @@ class Display(Thread):
 			self.environment.lock.acquire()
 			for food in self.environment.food_set:
 				x, y = convert_to_display_loc(food.pos)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 			for cell in self.environment.cell_list:
 				self.draw_wrapping_circle(cell, cell.radius, cell.color)
