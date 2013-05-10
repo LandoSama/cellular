@@ -9,7 +9,7 @@ def call(a, f):
 	return f(a)
 	
 def random_color():
-	randomcolor = random.randint(0,155),random.randint(0,155)/1.15,random.randint(0,155)
+	randomcolor = random.randint(0,155),int(random.randint(0,155)/1.15),random.randint(0,155)
 	return randomcolor
 
 class Cell:
