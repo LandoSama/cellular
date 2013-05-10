@@ -40,6 +40,8 @@ class Display(Thread):
 		for x in x_all:
 			for y in y_all:
 				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
 				
 				
 	def run(self):
