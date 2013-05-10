@@ -53,7 +53,7 @@ class Display(Thread):
 				x, y = convert_to_display_loc(food.pos)
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 			for cell in self.environment.cell_list:
-				self.draw_wrapping_circle(cell, cell.radius, cell.color)
+				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			self.environment.lock.release()
 
 			for event in pygame.event.get():

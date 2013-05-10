@@ -1,6 +1,5 @@
 import unittest, util, environment
 import random, math
-import pygame
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
@@ -10,7 +9,7 @@ def call(a, f):
 	return f(a)
 	
 def random_color():
-    randomcolor = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    randomcolor = random.randint(0,255),random.randint(0,255),random.randint(0,255)
     return randomcolor
 
 class Cell:
