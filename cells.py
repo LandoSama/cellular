@@ -30,6 +30,7 @@ class Cell:
 		self.density			= Phenotype[4]
 		if Phenotype[5] == None:
 			self.color = random_color()
+			Phentotype[5] = self.color
 		else:	self.color		= Phenotype[5]
 		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
 		
