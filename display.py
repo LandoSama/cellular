@@ -6,8 +6,8 @@ import random
 
 pygame.init()
 fpsClock = pygame.time.Clock()
-display_width = 500
-display_height = 500
+display_width = 700
+display_height = 700
 windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Nautical Cell Force 2')
 
@@ -43,22 +43,35 @@ class Display(Thread):
 				
 				#s = pygame.Surface((r*2 + 1, r*2 + 1), flags=SRCALPHA)
 				#s.fill(Color(0,0,0,0))
+				#pygame.gfxdraw.filled_ellipse(s, r, r, r, r, color)
 				#pygame.gfxdraw.aacircle(s, r, r, r, color)
-				#pygame.gfxdraw.filled_circle(s, r, r, r, color)
 				#s2 = pygame.Surface((r*2 + 1, r*2 + 1), flags=SRCALPHA)
 				#s2.fill(Color(255,255,255,255))
-				#pygame.gfxdraw.aacircle(s2, r, r, int(r*0.5), Color(0,0,0,128))
-				#pygame.gfxdraw.filled_circle(s2, r, r, int(r*0.5), Color(0,0,0,238))
-				#s.blit(s2, (0,0), None, BLEND_RGBA_MIN)
+				#pygame.gfxdraw.aacircle(s2, r, r, int(r*0.5), Color(0,0,0,0))
+				#pygame.gfxdraw.filled_circle(s2, r, r, int(r*0.5), Color(0,0,0,0))
+				#s.blit(s2, (0,0), None, BLEND_ADD)
 				#windowSurfaceObj.fill(Color(0,0,0))
 				#windowSurfaceObj.blit(s2, (x - r, y - r))
 				
 				#pygame.draw.circle(windowSurfaceObj, color, (x,y), r, min(5,r))
+				
+				#bg_circle_mask holds a (255,255,255,255) circle in the center that will extract the background, and 
+				#the exterior, (0,0,0,0), will be a transparent mask
+				bg_circle_mask = pygame.Surface((r*2 + 1, r*2 + 1), flags=SRCALPHA)
+				bg_circle_mask.fill(Color(0,0,0,0))
+				pygame.gfxdraw.filled_circle(bg_circle_mask, r, r, r - 2, Color(255,255,255,255))
+				pygame.gfxdraw.aacircle(bg_circle_mask, r, r, r - 2, Color(255,255,255,255))
+				
+				#Now contains circle with contents of background inside
+				bg_circle_mask.blit(windowSurfaceObj, (0,0), Rect(x - r, y - r, r*2 + 1, r*2 + 1), BLEND_RGBA_MULT)
+				
 				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r, color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r-1, color)
-				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r-2, color)
-				#pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
-				#pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
+				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, r, color)
+				
+				#Re-blit the background circle to the screen
+				windowSurfaceObj.blit(bg_circle_mask, (x - r, y - r), Rect(0, 0, r*2 + 1, r*2 + 1))
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, r-3, color)
+				pygame.gfxdraw.circle(windowSurfaceObj, x, y, r-2, color)
 				
 				
 	def run(self):
@@ -69,6 +82,7 @@ class Display(Thread):
 			for food in self.environment.food_set:
 				x, y = convert_to_display_loc(food.pos)
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
+				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 			for cell in self.environment.cell_list:
 				self.draw_wrapping_circle(cell, cell.radius, cell.color)
 			self.environment.lock.release()
